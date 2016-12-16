@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
  <scenario xmlns="urn:perfcake:scenario:7.0">
+
     <run type="time" value="10000"/>
     <generator class="DefaultMessageGenerator" 
                threads="${thread.count:10}"/>
+
+   <sequences>
+      <sequence id="counter" class="PrimitiveNumberSequence"/>
+   </sequences>
+
     <sender class="HttpSender">
        <target>http://localhost:8080/api/workitems</target>
        <property name="method" value="POST"/>
@@ -20,19 +26,25 @@
              <property name="attributes" value="Result,Average"/>
           </destination>
           <destination class="ConsoleDestination">
-             <period type="time" value="1000"/>
+             <period type="iteration" value="10"/>
           </destination>
        </reporter>
     </reporting>
 
     <messages>
-       <message content='{"type":"system.bug", "fields":{"system.title":"test this workitem", "system.owner":"tmaeder", "system.state":"open", "system.creator":"ldimaggi"}}'>
+       <message content='{"type":"system.bug", "fields":{"system.title":"test this @{counter} workitem", "system.owner":"tmaeder", "system.state":"open", "system.creator":"ldimaggi"}}'>
           <header name="HttpSender" value="POST" />
           <header name="Content-Type" value="application/json" />
           <header name="Accept" value="application/json" />
           <header name="Authorization" value="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsTmFtZSI6IlRlc3QgRGV2ZWxvcGVyIiwiaW1hZ2VVUkwiOiIiLCJ1dWlkIjoiZmZhOTJlMzQtNWM0ZC00Yjc0LWE3NzEtZDFiNGYzNjE4ZWI0In0.M9WEhgNXksZyfED0McyvQd_z_43BdDaFv3Ptwk20-r0hha_LLLsK0UcmZhoVR_VeVdWbuVfqjwE6GT7n4AaBexBa0w3opxytajEVY0iQaZWW3bjBZdie0UwhFAkw2PxdPF-6r02dh4l7xyRqDsvLtzLWqb6Jw9xuX5gWBLdJcHCB-ovaR4FTNQ3bIs2_wv2URaRMBbhBOlVKLjMQrgD625fo7n47DCpj7aXrp0KbWuRiCHJngCZmS7E0R3O4IkSosp3LFiKQgMp4E4qDPeBLVVNMrtO1dhQOT31gF1YvtAp2W-0yB-w-jRdy9D3OwXmLgSt-IzcRe4pA6nZl9Jw-hg" />
+         <validatorRef id="simplePrintValidator"/>
        </message>
     </messages>
 
- </scenario>
+   <validation>
+      <validator id="simplePrintValidator" class="RegExpValidator">
+         <property name="pattern" value=".*test this .* workitem.*"/>
+      </validator>
+   </validation>
 
+ </scenario>
