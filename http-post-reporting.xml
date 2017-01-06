@@ -32,11 +32,14 @@
     </reporting>
 
     <messages>
-       <message content='{"type":"system.bug", "fields":{"system.title":"test this @{counter} workitem", "system.owner":"tmaeder", "system.state":"open", "system.creator":"ldimaggi"}}'>
+<!--       <message content='{"type":"system.bug", "fields":{"system.title":"test this @{counter} workitem", "system.owner":"tmaeder", "system.state":"open", "system.creator":"ldimaggi"}}'>  -->
+
+<message content='{"data":{"attributes":{"system.state":"open","system.title":"test this @{counter} workitem","system.description":"Hello Description"},"relationships":{"baseType":{"data":{"id":"system.bug","type":"workitemtypes"}}},"type":"workitems"}}'> 
+
           <header name="HttpSender" value="POST" />
           <header name="Content-Type" value="application/json" />
           <header name="Accept" value="application/json" />
-          <header name="Authorization" value="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsTmFtZSI6IlRlc3QgRGV2ZWxvcGVyIiwiaW1hZ2VVUkwiOiIiLCJ1dWlkIjoiZmZhOTJlMzQtNWM0ZC00Yjc0LWE3NzEtZDFiNGYzNjE4ZWI0In0.M9WEhgNXksZyfED0McyvQd_z_43BdDaFv3Ptwk20-r0hha_LLLsK0UcmZhoVR_VeVdWbuVfqjwE6GT7n4AaBexBa0w3opxytajEVY0iQaZWW3bjBZdie0UwhFAkw2PxdPF-6r02dh4l7xyRqDsvLtzLWqb6Jw9xuX5gWBLdJcHCB-ovaR4FTNQ3bIs2_wv2URaRMBbhBOlVKLjMQrgD625fo7n47DCpj7aXrp0KbWuRiCHJngCZmS7E0R3O4IkSosp3LFiKQgMp4E4qDPeBLVVNMrtO1dhQOT31gF1YvtAp2W-0yB-w-jRdy9D3OwXmLgSt-IzcRe4pA6nZl9Jw-hg" />
+          <header name="Authorization" value="Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsTmFtZSI6IlRlc3QgRGV2ZWxvcGVyIiwiaW1hZ2VVUkwiOiIiLCJ1dWlkIjoiMzgwMjQzMzctZDM0Ny00Nzk4LTlmNWEtMmQ2NzBlYjI0NWI3In0.CJZq4RuK2d7Di6L49d6_M39dgg0FGLFbQetH2uzm35O8jfMtvKeBuPNIQpBLo8ToxILOktvg3CZPNYhxbMthmWDF8t37yDdTdVIrNrifdUio2K-iceswEH1ULf7WuguRoQnM_KZLynngKNLQ0tqWJdC2EqVQ2yhLNK-7vfxGHg0NAYFSh-U3eqOIBGuXabQ6khtZ7qHi-MsIuxdF4dI0eMLtwJIfxRyvgz_M8NXjGBsG76bRK1nyw85ABVfwzU2OcrAOfT2YRrE70sXUdXgopdCkHNPT1q0IAWoRpYtZ0-PQRjDvyGAuOj-DEH5WiCfBTXKuL1wurcVheK2mr9v3UA" />
          <validatorRef id="simplePrintValidator"/>
        </message>
     </messages>
@@ -48,3 +51,4 @@
    </validation>
 
  </scenario>
+
