@@ -26,13 +26,16 @@ docker run --name db -d -p 5432 -e POSTGRESQL_ADMIN_PASSWORD=mysecretpassword ce
 
 # Cleanup and then build the docker core image
 make docker-rm
+sleep 10
 make docker-start 
+sleep 10
 make docker-build
-sleep 30
+sleep 10
 make docker-image-deploy
 
 # Run the docker core image (detached)
 docker run -p 1234:8080 --name core -d -e ALMIGHTY_DEVELOPER_MODE_ENABLED=1 -e ALMIGHTY_POSTGRES_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' db 2>/dev/null) almighty-core-deploy
+sleep 10
 
 # Run the test
 
@@ -59,10 +62,4 @@ export docker_containers="almighty-core-local-build silly_leakey boring_panini j
 
 for c in $docker_containers; do docker stop $c; done
 for c in $docker_containers; do docker rm $c; done
-
-docker rmi almighty-core-deploy
-docker rmi almighty-core
-docker rmi docker.io/centos/postgresql-95-centos7
-docker rmi docker.io/almightycore/almighty-core
-
 
