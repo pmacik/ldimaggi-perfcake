@@ -28,6 +28,7 @@ docker run --name db -d -p 5432 -e POSTGRESQL_ADMIN_PASSWORD=mysecretpassword ce
 make docker-rm
 make docker-start 
 make docker-build
+sleep 30
 make docker-image-deploy
 
 # Run the docker core image (detached)
