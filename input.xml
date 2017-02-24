@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <scenario xmlns="urn:perfcake:scenario:7.0">
+
+    <run type="time" value="10000"/>
+    <generator class="DefaultMessageGenerator" 
+               threads="${thread.count:10}"/>
+
+   <sequences>
+      <sequence id="counter" class="PrimitiveNumberSequence"/>
+   </sequences>
+
+    <sender class="HttpSender">
+       <target>http://api-perf.dev.rdu2c.fabric8.io/api/workitems</target>
+       <property name="method" value="POST"/>
+       <property name="expectedResponseCodes" value="201"/>
+    </sender>
+    <reporting>
+       <reporter class="ResponseTimeStatsReporter">
+          <property name="minimumEnabled" value="false"/>
+          <property name="maximumEnabled" value="false"/>
+          <destination class="ChartDestination">
+             <period type="time" value="1000"/>
+             <property name="name" value="Response Time"/>
+             <property name="group" value="rt"/>
+             <property name="yAxis" value="Response Time [ms]"/>
+             <property name="attributes" value="Result,Average"/>
+          </destination>
+          <destination class="ConsoleDestination">
+             <period type="iteration" value="10"/>
+          </destination>
+       </reporter>
+    </reporting>
+
+    <messages>
+<!--       <message content='{"type":"system.bug", "fields":{"system.title":"test this @{counter} workitem", "system.owner":"tmaeder", "system.state":"open", "system.creator":"ldimaggi"}}'>  -->
+<!--<message content='{"data":{"attributes":{"system.state":"open","system.title":"test this @{counter} workitem","system.description":"Hello Description"},"relationships":{"baseType":{"data":{"id":"system.bug","type":"workitemtypes"}}},"type":"workitems"}}'> -->
+
+<message content='{ "data": { "attributes": { "system.owner": "tmaeder", "system.state": "open", "system.title": "test this @{counter} workitem", "version": "1" }, "relationships": { "baseType": { "data": { "id": "userstory", "type": "workitemtypes" } } }, "type": "workitems" } }'>
+
+          <header name="HttpSender" value="POST" />
+          <header name="Content-Type" value="application/json" />
+          <header name="Accept" value="application/json" />
+          <header name="Authorization" value="Bearer THETOKEN" />
+         <validatorRef id="simplePrintValidator"/>
+       </message>
+    </messages>
+
+   <validation>
+      <validator id="simplePrintValidator" class="RegExpValidator">
+         <property name="pattern" value=".*test this .* workitem.*"/>
+      </validator>
+   </validation>
+
+ </scenario>
+
+
+
