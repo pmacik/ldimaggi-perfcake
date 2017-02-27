@@ -32,6 +32,7 @@ sleep 10
 make docker-build
 sleep 10
 make docker-image-deploy
+sleep 10
 
 # Run the docker core image (detached)
 docker run -p 1234:8080 --name core -d -e ALMIGHTY_DEVELOPER_MODE_ENABLED=1 -e ALMIGHTY_POSTGRES_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' db 2>/dev/null) almighty-core-deploy
