@@ -12,13 +12,13 @@ yum -y install make
 wget https://www.perfcake.org/download/perfcake-7.4-bin.zip
 unzip perfcake-7.4-bin.zip
 export PERFCAKE_HOME=$PWD/perfcake-7.4
-git clone git@github.com:ldimaggi/perfcake.git
+git clone https://github.com/ldimaggi/perfcake.git
 cp perfcake/input.xml perfcake-7.4/resources/scenarios/
 
 # Build the core server that will provide our test client with tokens
 
 # Download the core 
-git clone git@github.com:almighty/almighty-core.git
+git clone https://github.com/almighty/almighty-core.git
 cd almighty-core
 
 # Run the DB docker image (detached) that the core requires
