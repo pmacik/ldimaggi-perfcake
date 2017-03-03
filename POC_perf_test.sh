@@ -8,6 +8,11 @@ yum -y install git
 yum -y install curl
 yum -y install make
 
+# Start up the docker daemon
+systemctl start docker
+sleep 10
+systemctl status docker
+
 # Get Perfcake, and our preconfigured Perfcake test config file
 wget https://www.perfcake.org/download/perfcake-7.4-bin.zip
 unzip perfcake-7.4-bin.zip
