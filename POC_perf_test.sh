@@ -88,3 +88,7 @@ export docker_containers="almighty-core-local-build silly_leakey boring_panini j
 for c in $docker_containers; do docker stop $c; done
 for c in $docker_containers; do docker rm $c; done
 
+# Query for the workitems
+curl -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g
+
+
