@@ -1,5 +1,8 @@
 set -x
 
+# Get a baseline of workitems in DB
+curl -silent -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g | grep totalCount >/tmp/before
+
 # Setup required packages
 # yum -y install java-1.8.0-oracle-devel java-1.8.0-oracle
 yum -y install docker*
@@ -90,5 +93,10 @@ for c in $docker_containers; do docker rm $c; done
 
 # Query for the workitems
 curl -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g
+
+curl -silent -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g | grep totalCount >/tmp/after
+
+cat /tmp/before /tmp/after
+
 
 
