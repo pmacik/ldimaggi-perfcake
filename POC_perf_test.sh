@@ -11,6 +11,7 @@ yum -y install git
 yum -y install curl
 yum -y install make
 yum -y install chkconfig
+yum -y install unzip
 
 # Install Java - ref: https://tecadmin.net/install-java-8-on-centos-rhel-and-fedora/
 
