@@ -79,6 +79,9 @@ echo "======= echo the prefcake config file here ================"
 cat $PERFCAKE_HOME/resources/scenarios/output.xml
 echo "======= echo the prefcake config file here ================"
 
+# Verify that the DB is write-able
+curl -X POST --header 'Authorization: Bearer $token' --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "data": { "attributes": { "system.owner": "tmaeder", "system.state": "open", "system.title": "Sample workitem", "version": "1" }, "relationships": { "baseType": { "data": { "id": "userstory", "type": "workitemtypes" } } }, "type": "workitems" } }' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems'
+
 # Run the test - single token == single user */
 $PERFCAKE_HOME/bin/perfcake.sh -s output.xml -Dthread.count=10 
 
