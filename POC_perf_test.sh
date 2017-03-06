@@ -75,7 +75,11 @@ echo $token
 # Insert the token into the Perfcake configuration file
 sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
 
-# Run the test */
+echo "======= prefcake config file ================"
+cat $PERFCAKE_HOME/resources/scenarios/output.xml
+echo "======= prefcake config file ================"
+
+# Run the test - single token == single user */
 $PERFCAKE_HOME/bin/perfcake.sh -s output.xml -Dthread.count=10 
 
 # Query for the workitems
