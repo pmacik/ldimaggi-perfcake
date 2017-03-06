@@ -75,9 +75,9 @@ echo $token
 # Insert the token into the Perfcake configuration file
 sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
 
-echo "======= echo the prefcake config file ================"
+echo "======= echo the prefcake config file here ================"
 cat $PERFCAKE_HOME/resources/scenarios/output.xml
-echo "======= echo the prefcake config file ================"
+echo "======= echo the prefcake config file here ================"
 
 # Run the test - single token == single user */
 $PERFCAKE_HOME/bin/perfcake.sh -s output.xml -Dthread.count=10 
@@ -102,6 +102,7 @@ curl -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabri
 curl -silent -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g | grep totalCount >/tmp/after
 
 cat /tmp/before /tmp/after
+
 
 
 
