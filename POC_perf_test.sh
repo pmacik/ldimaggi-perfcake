@@ -71,6 +71,7 @@ sleep 10
 # Parse/extract the token for the test
 token=$(curl --silent -X GET --header 'Accept: application/json' 'http://0000:1234/api/login/generate' | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g')
 echo $token
+export token="eyJhbGciOiJSUzI"
 
 # Insert the token into the Perfcake configuration file
 sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
@@ -78,10 +79,6 @@ sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PER
 echo "======= echo the prefcake config file here ================"
 cat $PERFCAKE_HOME/resources/scenarios/output.xml
 echo "======= echo the prefcake config file here ================"
-
-# Verify that the DB is write-able - with a throw-away workitem
-export temp="'Authorization: Bearer $token'"
-curl -X POST --header $temp --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ "data": { "attributes": { "system.owner": "tmaeder", "system.state": "open", "system.title": "Sample workitem", "version": "1" }, "relationships": { "baseType": { "data": { "id": "userstory", "type": "workitemtypes" } } }, "type": "workitems" } }' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems'
 
 # Run the test - single token == single user */
 $PERFCAKE_HOME/bin/perfcake.sh -s output.xml -Dthread.count=10 
