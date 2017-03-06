@@ -78,7 +78,6 @@ sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PER
 
 echo "======= echo the prefcake config file here ================"
 cat $PERFCAKE_HOME/resources/scenarios/output.xml
-echo "======= echo the prefcake config file here ================"
 
 # Run the test - single token == single user */
 $PERFCAKE_HOME/bin/perfcake.sh -s output.xml -Dthread.count=10 
