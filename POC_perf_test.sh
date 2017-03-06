@@ -15,6 +15,7 @@ yum -y install unzip
 
 # Install Java - ref: https://tecadmin.net/install-java-8-on-centos-rhel-and-fedora/
 
+export startDir=$PWD
 cd /opt/
 wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.tar.gz"
 tar xzf jdk-8u121-linux-x64.tar.gz
@@ -30,6 +31,8 @@ alternatives --set javac /opt/jdk1.8.0_121/bin/java
 export JAVA_HOME=/opt/jdk1.8.0_121
 export JRE_HOME=/opt/jdk1.8.0_121/jre
 export PATH=$PATH:/opt/jdk1.8.0_121/bin:/opt/jdk1.8.0_121/jre/bin
+
+cd $startDir
 
 # Start up the docker daemon
 systemctl start docker
@@ -71,7 +74,6 @@ sleep 10
 # Parse/extract the token for the test
 token=$(curl --silent -X GET --header 'Accept: application/json' 'http://0000:1234/api/login/generate' | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g')
 echo $token
-export token="eyJhbGciOiJSUzaqsI"
 
 # Insert the token into the Perfcake configuration file
 sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
