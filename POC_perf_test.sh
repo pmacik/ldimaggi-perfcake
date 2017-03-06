@@ -71,7 +71,7 @@ sleep 10
 # Parse/extract the token for the test
 token=$(curl --silent -X GET --header 'Accept: application/json' 'http://0000:1234/api/login/generate' | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g')
 echo $token
-export token="eyJhbGciOiJSUzI"
+export token="eyJhbGciOiJSUzaqsI"
 
 # Insert the token into the Perfcake configuration file
 sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
