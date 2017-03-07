@@ -28,7 +28,17 @@
           <destination class="ConsoleDestination">
              <period type="iteration" value="10"/>
           </destination>
+       </reporter>    
+     
+       <reporter class="ThroughputStatsReporter">
+         <property name="minimumEnabled" value="false"/>
+          <property name="maximumEnabled" value="false"/>
+          <destination class="CsvDestination">
+             <period type="time" value="2000"/>
+             <property name="path" value="test-average-throughput.csv"/>
+          </destination>
        </reporter>
+      
     </reporting>
 
     <messages>
