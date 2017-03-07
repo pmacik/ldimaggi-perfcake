@@ -76,8 +76,8 @@ token=$(curl --silent -X GET --header 'Accept: application/json' 'http://0000:12
 echo $token
 
 # Insert the token into the Perfcake configuration file
-## sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
-sed -e "s/THETOKEN/eyJhbGciOiJSU/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
+sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
+#sed -e "s/THETOKEN/eyJhbGciOiJSU/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
 
 echo "======= echo the prefcake config file here ================"
 cat $PERFCAKE_HOME/resources/scenarios/output.xml
