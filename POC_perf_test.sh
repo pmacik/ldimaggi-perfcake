@@ -84,6 +84,7 @@ cat $PERFCAKE_HOME/resources/scenarios/output.xml
 # Run the test - single token == single user */
 $PERFCAKE_HOME/bin/perfcake.sh -s output.xml -Dthread.count=10 
 cat $PERFCAKE_HOME/perfcake-validation.log
+cat $PERFCAKE_HOME/test-average-throughput.csv
 
 # Query for the workitems
 curl -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems'
