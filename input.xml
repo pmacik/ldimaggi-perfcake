@@ -34,9 +34,12 @@
     <messages>
 <!--       <message content='{"type":"system.bug", "fields":{"system.title":"test this @{counter} workitem", "system.owner":"tmaeder", "system.state":"open", "system.creator":"ldimaggi"}}'>  -->
 <!--<message content='{"data":{"attributes":{"system.state":"open","system.title":"test this @{counter} workitem","system.description":"Hello Description"},"relationships":{"baseType":{"data":{"id":"system.bug","type":"workitemtypes"}}},"type":"workitems"}}'> -->
-
+<!-- 
 <message content='{ "data": { "attributes": { "system.owner": "tmaeder", "system.state": "open", "system.title": "test this @{counter} workitem", "version": "1" }, "relationships": { "baseType": { "data": { "id": "userstory", "type": "workitemtypes" } } }, "type": "workitems" } }'>
-
+-->
+     
+<message content='{"data":{"attributes":{"system.description":"This is a test","system.remote_item_id":null,"system.state":"open","system.title":"Test  @{counter}","version":1},"relationships":{"area":{},"assignees":{},"baseType":{"data":{"id":"bbf35418-04b6-426c-a60b-7f80beb0b624","type":"workitemtypes"}},"creator":{"data":{"id":"e6999b5e-9fa1-43c1-82b9-402cb2269eec","links":{"self":"http://api.prod-preview.openshift.io/api/users/e6999b5e-9fa1-43c1-82b9-402cb2269eec"},"type":"identities"}},"iteration":{},"space":{"data":{"id":"2e0698d8-753e-4cef-bb7c-f027634824a2","type":"spaces"}}},"type":"workitems"}}'>
+     
           <header name="HttpSender" value="POST" />
           <header name="Content-Type" value="application/json" />
           <header name="Accept" value="application/json" />
