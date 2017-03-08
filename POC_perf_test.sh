@@ -83,7 +83,7 @@ cat $PERFCAKE_HOME/resources/scenarios/output.xml
 
 # Run the test - single token == single user */
 $PERFCAKE_HOME/bin/perfcake.sh -s output.xml -Dthread.count=10 
-cat $PERFCAKE_HOME/perfcake-validation.log
+cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*"links":{"self":"http://api-perf.dev.rdu2c.fabric8.io/api/workitems/\([^"]*\)".*,\1,g' > work-item-ids.csv
 cat $PERFCAKE_HOME/test-average-throughput.csv
 
 # Query for the workitems

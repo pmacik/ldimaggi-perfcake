@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
  <scenario xmlns="urn:perfcake:scenario:7.0">
 
-    <run type="time" value="10000"/>
+    <run type="iteration" value="1000"/>
     <generator class="DefaultMessageGenerator" 
                threads="${thread.count:10}"/>
 
@@ -55,6 +55,7 @@
           <header name="Accept" value="application/json" />
           <header name="Authorization" value="Bearer THETOKEN" />
          <validatorRef id="simplePrintValidator"/>
+         <validatorRef id="responsePrinter"/>
        </message>
     </messages>
 
@@ -62,6 +63,7 @@
       <validator id="simplePrintValidator" class="RegExpValidator">
          <property name="pattern" value=".*test this .* workitem.*"/>
       </validator>
+      <validator id="responsePrinter" class="PrintingValidator"/>
    </validation>
 
  </scenario>
