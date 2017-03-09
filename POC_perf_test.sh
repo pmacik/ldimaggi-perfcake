@@ -90,15 +90,20 @@ export PERFCAKE_PROPS="-Dthread.count=10 -Diteration.count=1000 -Dworkitemid.lis
 # (C)RUD
 $PERFCAKE_HOME/bin/perfcake.sh -s create $PERFCAKE_PROPS
 cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*"links":{"self":"http://api-perf.dev.rdu2c.fabric8.io/api/workitems/\([^"]*\)".*,\1,g' > $WORK_ITEM_IDS
+#cat $WORK_ITEM_IDS
 cat $PERFCAKE_HOME/create-average-throughput.csv
 mv $PERFCAKE_HOME/perfcake-validation.log $PERFCAKE_HOME/perfcake-validation-create.log
+#cat $PERFCAKE_HOME/perfcake-validation-create.log
 mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-create.log
+#cat $PERFCAKE_HOME/perfcake-create.log
 
 # C(R)UD
 $PERFCAKE_HOME/bin/perfcake.sh -s read $PERFCAKE_PROPS
 cat $PERFCAKE_HOME/read-average-throughput.csv
 mv $PERFCAKE_HOME/perfcake-validation.log $PERFCAKE_HOME/perfcake-validation-read.log
+#cat $PERFCAKE_HOME/perfcake-validation-read.log
 mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-read.log
+#cat $PERFCAKE_HOME/perfcake-read.log
 
 # CR(U)D
 # TODO: Coming soon...
