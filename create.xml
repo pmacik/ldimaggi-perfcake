@@ -4,6 +4,9 @@
    <generator class="DefaultMessageGenerator" threads="${thread.count:10}"/>
    <sequences>
       <sequence id="counter" class="PrimitiveNumberSequence"/>
+      <sequence id="authToken" class="FileLinesSequence">
+         <property name="fileUrl" value="${auth.token.list}"/>
+      </sequence>
    </sequences>
    <sender class="HttpSender">
       <target>http://api-perf.dev.rdu2c.fabric8.io/api/workitems</target>
@@ -39,7 +42,7 @@
          <header name="HttpSender" value="POST"/>
          <header name="Content-Type" value="application/json"/>
          <header name="Accept" value="application/json"/>
-         <header name="Authorization" value="Bearer ${auth.token}"/>
+         <header name="Authorization" value="Bearer @{authToken}"/>
          <validatorRef id="simplePrintValidator"/>
          <validatorRef id="printer"/>
       </message>

@@ -42,7 +42,6 @@
          <header name="HttpSender" value="GET"/>
          <header name="Content-Type" value="application/json"/>
          <header name="Accept" value="application/json"/>
-         <header name="Authorization" value="Bearer ${auth.token}"/>
          <validatorRef id="simplePrintValidator"/>
          <validatorRef id="printer"/>
       </message>

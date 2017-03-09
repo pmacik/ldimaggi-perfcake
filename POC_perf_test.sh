@@ -72,20 +72,21 @@ docker run -p 1234:8080 --name core -d -e ALMIGHTY_DEVELOPER_MODE_ENABLED=1 -e A
 sleep 10
 
 # Run the test
-
+export ITERATIONS=10000
+export THREADS=10
+export TOKEN_LIST=$PERFCAKE_HOME/token.keys
+export WORK_ITEM_IDS=$PERFCAKE_HOME/workitem-id.list
 # Parse/extract the token for the test
-token=$(curl --silent -X GET --header 'Accept: application/json' 'http://0000:1234/api/login/generate' | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g')
-echo $token
-
-# Insert the token into the Perfcake configuration file (not necessary - you can use properties)
-#sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
-#
-#echo "======= echo the prefcake config file here ================"
-#cat $PERFCAKE_HOME/resources/scenarios/output.xml
+for i in $(seq 1 $THREADS);
+do
+   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://0000:1234/api/login/generate')
+   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
+   echo $token >> $TOKEN_LIST;
+done
 
 # Run the test - single token == single user */
 export WORK_ITEM_IDS=$PERFCAKE_HOME/workitem-id.list
-export PERFCAKE_PROPS="-Dthread.count=10 -Diteration.count=1000 -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token=$token"
+export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST"
 
 # (C)RUD
 $PERFCAKE_HOME/bin/perfcake.sh -s create $PERFCAKE_PROPS
