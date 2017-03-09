@@ -45,6 +45,8 @@ unzip perfcake-7.4-bin.zip
 export PERFCAKE_HOME=$PWD/perfcake-7.4
 git clone https://github.com/ldimaggi/perfcake.git
 cp perfcake/input.xml perfcake-7.4/resources/scenarios/
+cp perfcake/create.xml perfcake-7.4/resources/scenarios/
+cp perfcake/read.xml perfcake-7.4/resources/scenarios/
 
 # Build the core server that will provide our test client with tokens
 
@@ -75,16 +77,42 @@ sleep 10
 token=$(curl --silent -X GET --header 'Accept: application/json' 'http://0000:1234/api/login/generate' | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g')
 echo $token
 
-# Insert the token into the Perfcake configuration file
-sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
-
-echo "======= echo the prefcake config file here ================"
-cat $PERFCAKE_HOME/resources/scenarios/output.xml
+# Insert the token into the Perfcake configuration file (not necessary - you can use properties)
+#sed -e "s/THETOKEN/$token/g" $PERFCAKE_HOME/resources/scenarios/input.xml > $PERFCAKE_HOME/resources/scenarios/output.xml
+#
+#echo "======= echo the prefcake config file here ================"
+#cat $PERFCAKE_HOME/resources/scenarios/output.xml
 
 # Run the test - single token == single user */
-$PERFCAKE_HOME/bin/perfcake.sh -s output.xml -Dthread.count=10 
-cat $PERFCAKE_HOME/perfcake-validation.log
-cat $PERFCAKE_HOME/test-average-throughput.csv
+export WORK_ITEM_IDS=$PERFCAKE_HOME/workitem-id.list
+export PERFCAKE_PROPS="-Dthread.count=10 -Diteration.count=1000 -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token=$token"
+
+# (C)RUD
+$PERFCAKE_HOME/bin/perfcake.sh -s create $PERFCAKE_PROPS
+cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*"links":{"self":"http://api-perf.dev.rdu2c.fabric8.io/api/workitems/\([^"]*\)".*,\1,g' > $WORK_ITEM_IDS
+#cat $WORK_ITEM_IDS
+cat $PERFCAKE_HOME/create-average-throughput.csv
+mv $PERFCAKE_HOME/perfcake-validation.log $PERFCAKE_HOME/perfcake-validation-create.log
+#cat $PERFCAKE_HOME/perfcake-validation-create.log
+mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-create.log
+#cat $PERFCAKE_HOME/perfcake-create.log
+
+# C(R)UD
+$PERFCAKE_HOME/bin/perfcake.sh -s read $PERFCAKE_PROPS
+cat $PERFCAKE_HOME/read-average-throughput.csv
+mv $PERFCAKE_HOME/perfcake-validation.log $PERFCAKE_HOME/perfcake-validation-read.log
+#cat $PERFCAKE_HOME/perfcake-validation-read.log
+mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-read.log
+#cat $PERFCAKE_HOME/perfcake-read.log
+
+# CR(U)D
+# TODO: Coming soon...
+
+# CRU(D)
+# TODO: Coming soon...
+
+# Copy the PerfCake results to the jenkins' workspace to be able to archive
+cp -rvf $PERFCAKE_HOME/perfcake-chart $WORKSPACE/
 
 # Query for the workitems
 curl -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems'
