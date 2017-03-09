@@ -112,7 +112,7 @@ mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-read.log
 # TODO: Coming soon...
 
 # Copy the PerfCake results to the jenkins' workspace to be able to archive
-export $PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results
+export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results
 mkdir -p $PERFORMANCE_RESULTS
 cp -rvf $PERFCAKE_HOME/perfcake-chart $PERFORMANCE_RESULTS
 
