@@ -111,6 +111,9 @@ mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-read.log
 # CRU(D)
 # TODO: Coming soon...
 
+# Copy the PerfCake results to the jenkins' workspace to be able to archive
+cp -rvf $PERFCAKE_HOME/perfcake-chart $WORKSPACE/
+
 # Query for the workitems
 curl -X GET --header 'Accept: application/json' 'http://api-perf.dev.rdu2c.fabric8.io/api/workitems'
 
