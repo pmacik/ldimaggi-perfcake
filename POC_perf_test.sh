@@ -2,7 +2,7 @@ set -x
 
 export WORKSPACE=$PWD
 
-export PERFCAKE_HOME=$PWD/perfcake-7.4
+export PERFCAKE_HOME=$WORKSPACE/perfcake-7.4
 
 export TOKEN_LIST=$PERFCAKE_HOME/token.keys
 export WORK_ITEM_IDS=$PERFCAKE_HOME/workitem-id.list
@@ -11,19 +11,15 @@ export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results
 
 export POC_RESULTS=$PERFORMANCE_RESULTS/poc-results.log
 
-export ITERATIONS=100
+export ITERATIONS=10000
 export THREADS=10
 export USERS=1 # keep it 1 until https://github.com/PerfCake/PerfCake/issues/379 is fixed
 export SERVER_HOST=api-perf.dev.rdu2c.fabric8.io
 export SERVER_PORT=80
 
-function curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount {
-   curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount
-}
-
 # Setup required packages
 # yum -y install java-1.8.0-oracle-devel java-1.8.0-oracle
-yum -y install docker*
+#yum -y install docker*
 yum -y install wget
 yum -y install git
 yum -y install curl
@@ -53,9 +49,9 @@ export PATH=$PATH:/opt/jdk1.8.0_121/bin:/opt/jdk1.8.0_121/jre/bin
 cd $startDir
 
 # Start up the docker daemon
-systemctl start docker
-sleep 10
-systemctl status docker
+#systemctl start docker
+#sleep 10
+#systemctl status docker
 
 # Get Perfcake, and our preconfigured Perfcake test config file
 wget https://www.perfcake.org/download/perfcake-7.4-bin.zip
@@ -64,6 +60,7 @@ git clone https://github.com/ldimaggi/perfcake.git
 cp perfcake/input.xml perfcake-7.4/resources/scenarios/
 cp perfcake/create.xml perfcake-7.4/resources/scenarios/
 cp perfcake/read.xml perfcake-7.4/resources/scenarios/
+cp perfcake/delete.xml perfcake-7.4/resources/scenarios/
 
 ## Build the core server that will provide our test client with tokens
 #
@@ -90,6 +87,8 @@ cp perfcake/read.xml perfcake-7.4/resources/scenarios/
 # Run the test
 rm -rf $WORK_ITEM_IDS
 rm -rf $TOKEN_LIST
+rm -rf $PERFORMANCE_RESULTS
+mkdir -p $PERFORMANCE_RESULTS
 
 # Parse/extract the token for the test
 for i in $(seq 1 $USERS);
