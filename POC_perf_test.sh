@@ -9,7 +9,7 @@ export SERVER_HOST=api-perf.dev.rdu2c.fabric8.io
 export SERVER_PORT=80
 
 # Setup required packages
-# yum -y install java-1.8.0-oracle-devel java-1.8.0-oracle
+yum -y install java-1.8.0-oracle-devel java-1.8.0-oracle
 #yum -y install docker*
 yum -y install wget
 yum -y install git
@@ -17,6 +17,7 @@ yum -y install curl
 yum -y install make
 yum -y install chkconfig
 yum -y install unzip
+yum -y install maven
 
 # Install Java - ref: https://tecadmin.net/install-java-8-on-centos-rhel-and-fedora/
 
