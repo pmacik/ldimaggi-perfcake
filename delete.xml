@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <scenario xmlns="urn:perfcake:scenario:8.0">
-   <run type="iteration" value="${iteration.count:1000}"/>
+   <run type="iteration" value="${iteration.count:10000}"/>
    <generator class="DefaultMessageGenerator" threads="${thread.count:10}"/>
    <sequences>
       <sequence id="workItemId" class="FileLinesSequence">
@@ -28,14 +28,14 @@
             <property name="attributes" value="Result,Average"/>
          </destination>
          <destination class="ConsoleDestination">
-            <period type="iteration" value="100"/>
+            <period type="percentage" value="1"/>
          </destination>
       </reporter>
       <reporter class="ThroughputStatsReporter">
          <property name="minimumEnabled" value="false"/>
          <property name="maximumEnabled" value="false"/>
          <destination class="CsvDestination">
-            <period type="time" value="2000"/>
+            <period type="time" value="1000"/>
             <property name="path" value="${perfcake.scenario}-average-throughput.csv"/>
          </destination>
       </reporter>

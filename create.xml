@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <scenario xmlns="urn:perfcake:scenario:8.0">
-   <run type="iteration" value="${iteration.count:1000}"/>
+   <run type="iteration" value="${iteration.count:10000}"/>
    <generator class="DefaultMessageGenerator" threads="${thread.count:10}"/>
    <sequences>
       <sequence id="counter" class="PrimitiveNumberSequence"/>
@@ -25,7 +25,7 @@
             <property name="attributes" value="Result,Average"/>
          </destination>
          <destination class="ConsoleDestination">
-            <period type="iteration" value="100"/>
+            <period type="percentage" value="1"/>
          </destination>
       </reporter>
       <reporter class="ThroughputStatsReporter">
