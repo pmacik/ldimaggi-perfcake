@@ -14,7 +14,7 @@ export POC_RESULTS=$PERFORMANCE_RESULTS/poc-results.log
 
 export ITERATIONS=10000
 export THREADS=10
-export USERS=1 # keep it 1 until https://github.com/PerfCake/PerfCake/issues/379 is fixed
+export USERS=10 # keep it 1 until https://github.com/PerfCake/PerfCake/issues/379 is fixed
 export SERVER_HOST=api-perf.dev.rdu2c.fabric8.io
 export SERVER_PORT=80
 
@@ -101,9 +101,9 @@ do
 done
 
 # Run the test - single token == single user
+export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
 #workaround for https://github.com/PerfCake/PerfCake/issues/379
-#export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
-export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token=$token -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
+#export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token=$token -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
 
 echo "Running $ITERATIONS iterations with $THREADS threads" >> $POC_RESULTS
 

@@ -6,6 +6,9 @@
       <sequence id="workItemId" class="FileLinesSequence">
          <property name="fileUrl" value="${workitemid.list}"/>
       </sequence>
+      <sequence id="authToken" class="FileLinesSequence">
+         <property name="fileUrl" value="${auth.token.list}"/>
+      </sequence>
    </sequences>
    <sender class="HttpSender">
       <target>http://${server.host}:${server.port}/api/workitems/@{workItemId}</target>
@@ -25,7 +28,7 @@
             <property name="attributes" value="Result,Average"/>
          </destination>
          <destination class="ConsoleDestination">
-            <period type="iteration" value="10"/>
+            <period type="iteration" value="100"/>
          </destination>
       </reporter>
       <reporter class="ThroughputStatsReporter">
@@ -42,7 +45,7 @@
          <header name="HttpSender" value="DELETE"/>
          <header name="Content-Type" value="application/json"/>
          <header name="Accept" value="application/json"/>
-         <header name="Authorization" value="Bearer ${auth.token}"/>
+         <header name="Authorization" value="Bearer @{authToken}"/>
       </message>
    </messages>
 </scenario>
