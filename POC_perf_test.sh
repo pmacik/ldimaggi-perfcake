@@ -1,17 +1,7 @@
 set -x
 
+## Needed ENV variables
 export WORKSPACE=$PWD
-
-export PERFCAKE_VERSION=8.0-SNAPSHOT
-export PERFCAKE_HOME=$WORKSPACE/perfcake-$PERFCAKE_VERSION
-
-export TOKEN_LIST=$PERFCAKE_HOME/token.keys
-export WORK_ITEM_IDS=$PERFCAKE_HOME/workitem-id.list
-
-export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results
-
-export POC_RESULTS=$PERFORMANCE_RESULTS/poc-results.log
-
 export ITERATIONS=10000
 export THREADS=10
 export USERS=10 # keep it 1 until https://github.com/PerfCake/PerfCake/issues/379 is fixed
@@ -54,16 +44,6 @@ cd $startDir
 #sleep 10
 #systemctl status docker
 
-# Get Perfcake, and our preconfigured Perfcake test config file
-git clone -b feature/#379-workaround  https://github.com/PerfCake/PerfCake PerfCake.git
-mvn -f PerfCake.git/pom.xml clean package assembly:single -DskipTests
-unzip PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip
-rm -rvf PerfCake.git
-git clone https://github.com/ldimaggi/perfcake.git
-cp perfcake/create.xml $PERFCAKE_HOME/resources/scenarios/
-cp perfcake/read.xml $PERFCAKE_HOME/resources/scenarios/
-cp perfcake/delete.xml $PERFCAKE_HOME/resources/scenarios/
-
 ## Build the core server that will provide our test client with tokens
 #
 ## Download the core
@@ -86,73 +66,8 @@ cp perfcake/delete.xml $PERFCAKE_HOME/resources/scenarios/
 ## Run the docker core image (detached)
 #docker run -p 1234:8080 --name core -d -e ALMIGHTY_DEVELOPER_MODE_ENABLED=1 -e ALMIGHTY_POSTGRES_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' db 2>/dev/null) almighty-core-deploy
 
-# Run the test
-rm -rf $WORK_ITEM_IDS
-rm -rf $TOKEN_LIST
-rm -rf $PERFORMANCE_RESULTS
-mkdir -p $PERFORMANCE_RESULTS
-
-# Parse/extract the token for the test
-for i in $(seq 1 $USERS);
-do
-   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
-   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-   echo $token >> $TOKEN_LIST;
-done
-
-# Run the test - single token == single user
-export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
-#workaround for https://github.com/PerfCake/PerfCake/issues/379
-#export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token=$token -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
-
-echo "Running $ITERATIONS iterations with $THREADS threads" >> $POC_RESULTS
-
-# Get a baseline of workitems in DB
-echo "BEFORE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
-
-# (C)RUD
-$PERFCAKE_HOME/bin/perfcake.sh -s create $PERFCAKE_PROPS
-cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/api/workitems/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
-#cat $WORK_ITEM_IDS
-cat $PERFCAKE_HOME/create-average-throughput.csv
-mv $PERFCAKE_HOME/perfcake-validation.log $PERFCAKE_HOME/perfcake-validation-create.log
-#cat $PERFCAKE_HOME/perfcake-validation-create.log
-mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-create.log
-#cat $PERFCAKE_HOME/perfcake-create.log
-
-echo "After CREATE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
-
-# C(R)UD
-$PERFCAKE_HOME/bin/perfcake.sh -s read $PERFCAKE_PROPS
-cat $PERFCAKE_HOME/read-average-throughput.csv
-mv $PERFCAKE_HOME/perfcake-validation.log $PERFCAKE_HOME/perfcake-validation-read.log
-#cat $PERFCAKE_HOME/perfcake-validation-read.log
-mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-read.log
-#cat $PERFCAKE_HOME/perfcake-read.log
-
-echo "After READ:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
-
-# CR(U)D
-# TODO: Coming soon...
-
-echo "After UPDATE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
-
-# CRU(D)
-$PERFCAKE_HOME/bin/perfcake.sh -s delete $PERFCAKE_PROPS
-cat $PERFCAKE_HOME/read-average-throughput.csv
-mv $PERFCAKE_HOME/perfcake-validation.log $PERFCAKE_HOME/perfcake-validation-read.log
-#cat $PERFCAKE_HOME/perfcake-validation-read.log
-mv $PERFCAKE_HOME/perfcake.log $PERFCAKE_HOME/perfcake-read.log
-#cat $PERFCAKE_HOME/perfcake-read.log
-
-echo "After DELETE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
-
-cat $POC_RESULTS
+chmod +x crud-perf-test.sh
+./crud-perf-test.sh
 
 ## Cleanup any left over docker containers
 #docker stop core;
@@ -164,6 +79,3 @@ cat $POC_RESULTS
 #
 #for c in $docker_containers; do docker stop $c; done
 #for c in $docker_containers; do docker rm $c; done
-
-# Copy the PerfCake results to the jenkins' workspace to be able to archive
-cp -rvf $PERFCAKE_HOME/perfcake-chart $PERFORMANCE_RESULTS
