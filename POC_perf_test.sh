@@ -2,7 +2,8 @@ set -x
 
 export WORKSPACE=$PWD
 
-export PERFCAKE_HOME=$WORKSPACE/perfcake-7.4
+export PERFCAKE_VERSION=8.0-SNAPSHOT
+export PERFCAKE_HOME=$WORKSPACE/perfcake-$PERFCAKE_VERSION
 
 export TOKEN_LIST=$PERFCAKE_HOME/token.keys
 export WORK_ITEM_IDS=$PERFCAKE_HOME/workitem-id.list
@@ -54,13 +55,14 @@ cd $startDir
 #systemctl status docker
 
 # Get Perfcake, and our preconfigured Perfcake test config file
-wget https://www.perfcake.org/download/perfcake-7.4-bin.zip
-unzip perfcake-7.4-bin.zip
+git clone -b feature/#379-workaround  https://github.com/PerfCake/PerfCake PerfCake.git
+mvn -f PerfCake.git/pom.xml clean package assembly:single -DskipTests
+unzip PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip
+rm -rvf PerfCake.git
 git clone https://github.com/ldimaggi/perfcake.git
-cp perfcake/input.xml perfcake-7.4/resources/scenarios/
-cp perfcake/create.xml perfcake-7.4/resources/scenarios/
-cp perfcake/read.xml perfcake-7.4/resources/scenarios/
-cp perfcake/delete.xml perfcake-7.4/resources/scenarios/
+cp perfcake/create.xml $PERFCAKE_HOME/resources/scenarios/
+cp perfcake/read.xml $PERFCAKE_HOME/resources/scenarios/
+cp perfcake/delete.xml $PERFCAKE_HOME/resources/scenarios/
 
 ## Build the core server that will provide our test client with tokens
 #
