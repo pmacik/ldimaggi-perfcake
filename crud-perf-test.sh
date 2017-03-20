@@ -31,23 +31,10 @@ cp read.xml $PERFCAKE_HOME/resources/scenarios/
 cp update.xml $PERFCAKE_HOME/resources/scenarios/
 cp delete.xml $PERFCAKE_HOME/resources/scenarios/
 
-# Run the test (prepare clean env)
+# Prepare clean environment
 rm -rf $PERFORMANCE_RESULTS
 mkdir -p $PERFORMANCE_RESULTS
-
-# Parse/extract the token for the test
-for i in $(seq 1 $USERS);
-do
-   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
-   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-   echo $token >> $TOKEN_LIST;
-done
-
-# Run the test - single token == single user
 export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
-
-#workaround for https://github.com/PerfCake/PerfCake/issues/379
-#export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token=$token -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
 
 echo "Running $ITERATIONS iterations with $THREADS threads" >> $POC_RESULTS
 
@@ -56,6 +43,15 @@ echo "BEFORE:" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 # (C)RUD
+# Parse/extract the token for the test
+rm -rf $TOKEN_LIST
+for i in $(seq 1 $USERS);
+do
+   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
+   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
+   echo $token >> $TOKEN_LIST;
+done
+# Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s create $PERFCAKE_PROPS
 cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/api/workitems/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
 cat $PERFCAKE_HOME/create-average-throughput.csv
@@ -67,7 +63,17 @@ mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
 echo "After CREATE:" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
+
 # C(R)UD
+# Parse/extract the token for the test
+rm -rf $TOKEN_LIST
+for i in $(seq 1 $USERS);
+do
+   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
+   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
+   echo $token >> $TOKEN_LIST;
+done
+# Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s read $PERFCAKE_PROPS
 cat $PERFCAKE_HOME/read-average-throughput.csv
 mv $PERFCAKE_HOME/read-average-throughput.csv $PERFORMANCE_RESULTS
@@ -80,6 +86,15 @@ curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'
 
 # CR(U)D
 #TODO: Coming soon...
+# Parse/extract the token for the test
+#rm -rf $TOKEN_LIST
+#for i in $(seq 1 $USERS);
+#do
+#   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
+#   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
+#   echo $token >> $TOKEN_LIST;
+#done
+## Execute PerfCake
 #$PERFCAKE_HOME/bin/perfcake.sh -s update $PERFCAKE_PROPS
 #cat $PERFCAKE_HOME/update-average-throughput.csv
 #mv $PERFCAKE_HOME/update-average-throughput.csv $PERFORMANCE_RESULTS
@@ -91,6 +106,15 @@ echo "After UPDATE:" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 # CRU(D)
+# Parse/extract the token for the test
+rm -rf $TOKEN_LIST
+for i in $(seq 1 $USERS);
+do
+   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
+   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
+   echo $token >> $TOKEN_LIST;
+done
+# Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s delete $PERFCAKE_PROPS
 cat $PERFCAKE_HOME/delete-average-throughput.csv
 mv $PERFCAKE_HOME/delete-average-throughput.csv $PERFORMANCE_RESULTS
