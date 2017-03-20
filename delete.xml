@@ -21,7 +21,7 @@
          <property name="minimumEnabled" value="false"/>
          <property name="maximumEnabled" value="false"/>
          <destination class="ChartDestination">
-            <period type="time" value="1000"/>
+            <period type="percentage" value="1"/>
             <property name="name" value="DELETE Response Time"/>
             <property name="group" value="delete_rt"/>
             <property name="yAxis" value="Response Time [ms]"/>
@@ -33,7 +33,7 @@
       </reporter>
       <reporter class="IterationsPerSecondReporter">
          <destination class="CsvDestination">
-            <period type="time" value="1000"/>
+            <period type="percentage" value="1"/>
             <property name="path" value="${perfcake.scenario}-average-throughput.csv"/>
          </destination>
       </reporter>
