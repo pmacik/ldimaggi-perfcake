@@ -11,7 +11,7 @@
       </sequence>
    </sequences>
    <sender class="HttpSender">
-      <target>http://${server.host}:${server.port}/api/workitems/@{workItemId}</target>
+      <target>http://${server.host}:${server.port}/api/spaces/${workitems.space.id}/workitems/@{workItemId}</target>
       <property name="method" value="DELETE"/>
       <property name="keepConnection" value="false"/>
       <property name="expectedResponseCodes" value="200"/>

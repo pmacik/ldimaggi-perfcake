@@ -9,7 +9,7 @@
       </sequence>
    </sequences>
    <sender class="HttpSender">
-      <target>http://${server.host}:${server.port}/api/workitems</target>
+      <target>http://${server.host}:${server.port}/api/spaces/${workitems.space.id}/workitems</target>
       <property name="method" value="POST"/>
       <property name="expectedResponseCodes" value="201"/>
    </sender>

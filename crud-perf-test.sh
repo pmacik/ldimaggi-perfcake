@@ -34,13 +34,20 @@ cp delete.xml $PERFCAKE_HOME/resources/scenarios/
 # Prepare clean environment
 rm -rf $PERFORMANCE_RESULTS
 mkdir -p $PERFORMANCE_RESULTS
-export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
+export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
+
+# Get the work items space ID
+spaces_resp=`curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/spaces'`
+export WORK_ITEMS_SPACE=`echo $spaces_resp | grep self | sed -e 's,.*"self":"[^"]*/api/spaces/\([^"]*\)".*,\1,g'`
+
+export WORK_ITEMS_BASE_URI="api/spaces/$WORK_ITEMS_SPACE/workitems"
+export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
 
 echo "Running $ITERATIONS iterations with $THREADS threads" >> $POC_RESULTS
 
 # Get a baseline of workitems in DB
 echo "BEFORE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 # (C)RUD
 # Parse/extract the token for the test
@@ -53,7 +60,7 @@ do
 done
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s create $PERFCAKE_PROPS
-cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/api/workitems/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
+cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK_ITEMS_BASE_URI'/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
 cat $PERFCAKE_HOME/create-average-throughput.csv
 mv $PERFCAKE_HOME/create-average-throughput.csv $PERFORMANCE_RESULTS
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-create.log
@@ -61,7 +68,7 @@ rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
 
 echo "After CREATE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 
 # C(R)UD
@@ -82,7 +89,7 @@ rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-read.log
 
 echo "After READ:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 # CR(U)D
 #TODO: Coming soon...
@@ -103,7 +110,7 @@ curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'
 #mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-update.log
 
 echo "After UPDATE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 # CRU(D)
 # Parse/extract the token for the test
@@ -123,7 +130,7 @@ rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log
 
 echo "After DELETE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/workitems' |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 cat $POC_RESULTS
 
