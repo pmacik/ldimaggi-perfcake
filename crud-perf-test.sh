@@ -1,3 +1,5 @@
+set -x
+
 ## Needed ENV Variables
 #export WORKSPACE=$PWD
 #export ITERATIONS=1000
