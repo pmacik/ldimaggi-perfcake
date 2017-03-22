@@ -63,7 +63,7 @@ do
    echo $token >> $TOKEN_LIST;
 done
 # Execute PerfCake
-$PERFCAKE_HOME/bin/perfcake.sh -s create $PERFCAKE_PROPS
+$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-create $PERFCAKE_PROPS
 cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK_ITEMS_BASE_URI'/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
 cat $PERFCAKE_HOME/create-average-throughput.csv
 mv $PERFCAKE_HOME/create-average-throughput.csv $PERFORMANCE_RESULTS
