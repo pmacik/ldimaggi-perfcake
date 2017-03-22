@@ -29,9 +29,9 @@ rm -rf $PERFCAKE_HOME
 unzip PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip
 rm -rvf PerfCake.git
 cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/
-cp read.xml $PERFCAKE_HOME/resources/scenarios/
-cp update.xml $PERFCAKE_HOME/resources/scenarios/
-cp delete.xml $PERFCAKE_HOME/resources/scenarios/
+cp devtools-core-crud-read.xml $PERFCAKE_HOME/resources/scenarios/
+cp devtools-core-crud-update.xml $PERFCAKE_HOME/resources/scenarios/
+cp devtools-core-crud-delete.xml $PERFCAKE_HOME/resources/scenarios/
 
 rm -rf Plugins.git
 git clone https://github.com/PerfCake/Plugins Plugins.git
@@ -71,8 +71,8 @@ done
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-create $PERFCAKE_PROPS
 cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK_ITEMS_BASE_URI'/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
-cat $PERFCAKE_HOME/create-average-throughput.csv
-mv $PERFCAKE_HOME/create-average-throughput.csv $PERFORMANCE_RESULTS
+cat $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv
+mv $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv $PERFORMANCE_RESULTS
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-create.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
@@ -91,9 +91,9 @@ do
    echo $token >> $TOKEN_LIST;
 done
 # Execute PerfCake
-$PERFCAKE_HOME/bin/perfcake.sh -s read $PERFCAKE_PROPS
-cat $PERFCAKE_HOME/read-average-throughput.csv
-mv $PERFCAKE_HOME/read-average-throughput.csv $PERFORMANCE_RESULTS
+$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-read $PERFCAKE_PROPS
+cat $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv
+mv $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv $PERFORMANCE_RESULTS
 #mv $PER	FCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-read.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-read.log
@@ -112,9 +112,9 @@ curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s
 #   echo $token >> $TOKEN_LIST;
 #done
 ## Execute PerfCake
-#$PERFCAKE_HOME/bin/perfcake.sh -s update $PERFCAKE_PROPS
-#cat $PERFCAKE_HOME/update-average-throughput.csv
-#mv $PERFCAKE_HOME/update-average-throughput.csv $PERFORMANCE_RESULTS
+#$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-update $PERFCAKE_PROPS
+#cat $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv
+#mv $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv $PERFORMANCE_RESULTS
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-update.log
 #rm -vf $PERFCAKE_HOME/perfcake-validation.log
 #mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-update.log
@@ -132,9 +132,9 @@ do
    echo $token >> $TOKEN_LIST;
 done
 # Execute PerfCake
-$PERFCAKE_HOME/bin/perfcake.sh -s delete $PERFCAKE_PROPS
-cat $PERFCAKE_HOME/delete-average-throughput.csv
-mv $PERFCAKE_HOME/delete-average-throughput.csv $PERFORMANCE_RESULTS
+$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-delete $PERFCAKE_PROPS
+cat $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv
+mv $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv $PERFORMANCE_RESULTS
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-delete.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log

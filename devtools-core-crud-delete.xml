@@ -6,10 +6,13 @@
       <sequence id="workItemId" class="FileLinesSequence">
          <property name="fileUrl" value="${workitemid.list}"/>
       </sequence>
+      <sequence id="authToken" class="FileLinesSequence">
+         <property name="fileUrl" value="${auth.token.list}"/>
+      </sequence>
    </sequences>
    <sender class="HttpSender">
       <target>http://${server.host}:${server.port}/api/spaces/${workitems.space.id}/workitems/@{workItemId}</target>
-      <property name="method" value="GET"/>
+      <property name="method" value="DELETE"/>
       <property name="keepConnection" value="false"/>
       <property name="expectedResponseCodes" value="200"/>
    </sender>
@@ -19,8 +22,8 @@
          <property name="maximumEnabled" value="false"/>
          <destination class="ChartDestination">
             <period type="percentage" value="1"/>
-            <property name="name" value="READ Response Time"/>
-            <property name="group" value="read_rt"/>
+            <property name="name" value="DELETE Response Time"/>
+            <property name="group" value="delete_rt"/>
             <property name="yAxis" value="Response Time [ms]"/>
             <property name="attributes" value="Result,Average"/>
          </destination>
@@ -33,21 +36,24 @@
             <period type="percentage" value="1"/>
             <property name="path" value="${perfcake.scenario}-average-throughput.csv"/>
          </destination>
+         <destination class="PerfRepoDestination" enabled="${perfrepo.enabled:false}">
+            <period type="percentage" value="100"/>
+            <property name="metric" value="throughput"/>
+            <property name="repositoryUrl" value="perfrepo.mw.lab.eng.bos.redhat.com"/>
+            <property name="authenticationHeader" value="dGVhbXNvYTp0ZWFtc29hMSM="/>
+            <property name="testUID" value="${perfcake.scenario}"/>
+            <property name="tags" value="${perfrepo.tags}"/>
+            <property name="testExecutionName" value="Red Hat Developer Core: ${perfcake.scenario}"/>
+            <property name="reporterResultName" value="Result"/>
+         </destination>
       </reporter>
    </reporting>
    <messages>
       <message content="">
-         <header name="HttpSender" value="GET"/>
+         <header name="HttpSender" value="DELETE"/>
          <header name="Content-Type" value="application/json"/>
          <header name="Accept" value="application/json"/>
-         <validatorRef id="simplePrintValidator"/>
-         <validatorRef id="printer"/>
+         <header name="Authorization" value="Bearer @{authToken}"/>
       </message>
    </messages>
-   <validation>
-      <validator id="simplePrintValidator" class="RegExpValidator">
-         <property name="pattern" value=".*test this .* workitem.*"/>
-      </validator>
-      <validator id="printer" class="PrintingValidator"/>
-   </validation>
 </scenario>

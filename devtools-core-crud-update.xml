@@ -37,6 +37,16 @@
             <period type="percentage" value="1"/>
             <property name="path" value="${perfcake.scenario}-average-throughput.csv"/>
          </destination>
+         <destination class="PerfRepoDestination" enabled="${perfrepo.enabled:false}">
+            <period type="percentage" value="100"/>
+            <property name="metric" value="throughput"/>
+            <property name="repositoryUrl" value="perfrepo.mw.lab.eng.bos.redhat.com"/>
+            <property name="authenticationHeader" value="dGVhbXNvYTp0ZWFtc29hMSM="/>
+            <property name="testUID" value="${perfcake.scenario}"/>
+            <property name="tags" value="${perfrepo.tags}"/>
+            <property name="testExecutionName" value="Red Hat Developer Core: ${perfcake.scenario}"/>
+            <property name="reporterResultName" value="Result"/>
+         </destination>
       </reporter>
    </reporting>
    <messages>
