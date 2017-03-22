@@ -28,7 +28,7 @@ mvn -f PerfCake.git/pom.xml clean package assembly:single -DskipTests
 rm -rf $PERFCAKE_HOME
 unzip PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip
 rm -rvf PerfCake.git
-cp create.xml $PERFCAKE_HOME/resources/scenarios/
+cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/
 cp read.xml $PERFCAKE_HOME/resources/scenarios/
 cp update.xml $PERFCAKE_HOME/resources/scenarios/
 cp delete.xml $PERFCAKE_HOME/resources/scenarios/
@@ -50,7 +50,8 @@ echo "Running $ITERATIONS iterations with $THREADS threads" >> $POC_RESULTS
 echo "BEFORE:" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
-export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT"
+export PERFREPO_TAGS="threads=$THREADS;iterations=$ITERATIONS;users=$USERS;jenkins=$BUILD_TAG"
+export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT -Dperfrepo.tags=$PERFREPO_TAGS -Dperfrepo.enabled=true"
 
 # (C)RUD
 # Parse/extract the token for the test
