@@ -24,7 +24,7 @@ git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git
 cd PerfCake.git
 git checkout c887baaa13b640dc83ef7203f79d8c4818512aa4
 cd ..
-mvn -f PerfCake.git/pom.xml clean package assembly:single -DskipTests
+mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests
 rm -rf $PERFCAKE_HOME
 unzip PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip
 rm -rvf PerfCake.git
@@ -32,6 +32,12 @@ cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/
 cp read.xml $PERFCAKE_HOME/resources/scenarios/
 cp update.xml $PERFCAKE_HOME/resources/scenarios/
 cp delete.xml $PERFCAKE_HOME/resources/scenarios/
+
+rm -rf Plugins.git
+git clone https://github.com/PerfCake/Plugins Plugins.git
+mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests
+cp -rf Plugins.git/perfrepo-destination/target/perfrepo-*.jar $PERFCAKE_HOME/lib/plugins/
+cp -rf Plugins.git/perfrepo-destination/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/
 
 # Prepare clean environment
 rm -rf $PERFORMANCE_RESULTS
