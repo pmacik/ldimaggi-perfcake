@@ -13,31 +13,38 @@ set -x
 export PERFCAKE_VERSION=8.0-SNAPSHOT
 export PERFCAKE_HOME=$WORKSPACE/perfcake-$PERFCAKE_VERSION
 
-export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results
+if [[ "x$CYCLE" != "x" ]];
+do
+   export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results/$CYCLE;
+else
+   export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results;
+fi
 
 export TOKEN_LIST=$PERFORMANCE_RESULTS/token.keys
 export WORK_ITEM_IDS=$PERFORMANCE_RESULTS/workitem-id.list
 export POC_RESULTS=$PERFORMANCE_RESULTS/poc-results.log
 
 # Get Perfcake, and our preconfigured Perfcake test config file
-git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git
-cd PerfCake.git
-git checkout c887baaa13b640dc83ef7203f79d8c4818512aa4
-cd ..
-mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests
-rm -rf $PERFCAKE_HOME
-unzip PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip
-rm -rvf PerfCake.git
-cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/
-cp devtools-core-crud-read.xml $PERFCAKE_HOME/resources/scenarios/
-cp devtools-core-crud-update.xml $PERFCAKE_HOME/resources/scenarios/
-cp devtools-core-crud-delete.xml $PERFCAKE_HOME/resources/scenarios/
+if [[ "x$CYCLE" < "x1" ]];
+then
+   git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git;
+   cd PerfCake.git;
+   git checkout c887baaa13b640dc83ef7203f79d8c4818512aa4;
+   cd ..;
+   mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests;
 
-rm -rf Plugins.git
-git clone https://github.com/PerfCake/Plugins Plugins.git
-mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests
-cp -rf Plugins.git/perfrepo-destination/target/perfrepo-*.jar $PERFCAKE_HOME/lib/plugins/
-cp -rf Plugins.git/perfrepo-destination/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/
+   git clone https://github.com/PerfCake/Plugins Plugins.git;
+   mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests;
+fi
+
+rm -rf $PERFCAKE_HOME;
+unzip PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip;
+cp -rf Plugins.git/perfrepo-destination/target/perfrepo-*.jar $PERFCAKE_HOME/lib/plugins/;
+cp -rf Plugins.git/perfrepo-destination/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
+cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/;
+cp devtools-core-crud-read.xml $PERFCAKE_HOME/resources/scenarios/;
+cp devtools-core-crud-update.xml $PERFCAKE_HOME/resources/scenarios/;
+cp devtools-core-crud-delete.xml $PERFCAKE_HOME/resources/scenarios/;
 
 # Prepare clean environment
 rm -rf $PERFORMANCE_RESULTS
@@ -50,6 +57,11 @@ export WORK_ITEMS_SPACE=`echo $spaces_resp | grep self | sed -e 's,.*"self":"[^"
 export WORK_ITEMS_BASE_URI="api/spaces/$WORK_ITEMS_SPACE/workitems"
 export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
 
+if [[ "x$CYCLE" != "x" ]];
+do
+   echo "==========================================" >> $POC_RESULTS;
+   echo "Cycle # $CYCLE:" >> $POC_RESULTS;
+fi
 echo "Running $ITERATIONS iterations with $THREADS threads" >> $POC_RESULTS
 
 # Get a baseline of workitems in DB
@@ -57,6 +69,10 @@ echo "BEFORE:" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 export PERFREPO_TAGS="threads=$THREADS;iterations=$ITERATIONS;users=$USERS;jenkins=$BUILD_TAG"
+if [[ "x$ADDITIONAL_PERFREPO_TAGS" != "x" ]];
+then
+   export PERFREPO_TAGS="$PERFREPO_TAGS;$ADDITIONAL_PERFREPO_TAGS";
+fi
 export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT -Dperfrepo.tags=$PERFREPO_TAGS -Dperfrepo.enabled=true"
 
 # (C)RUD
