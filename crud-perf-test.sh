@@ -58,7 +58,7 @@ export WORK_ITEMS_BASE_URI="api/spaces/$WORK_ITEMS_SPACE/workitems"
 export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
 
 if [[ "x$CYCLE" != "x" ]];
-do
+then
    echo "==========================================" >> $POC_RESULTS;
    echo "Cycle # $CYCLE:" >> $POC_RESULTS;
 fi
