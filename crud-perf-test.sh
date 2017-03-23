@@ -14,7 +14,7 @@ export PERFCAKE_VERSION=8.0-SNAPSHOT
 export PERFCAKE_HOME=$WORKSPACE/perfcake-$PERFCAKE_VERSION
 
 if [[ "x$CYCLE" != "x" ]];
-do
+then
    export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results/$CYCLE;
 else
    export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results;
