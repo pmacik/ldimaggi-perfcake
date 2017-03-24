@@ -27,12 +27,14 @@ export POC_RESULTS=$PERFORMANCE_RESULTS/poc-results.log
 # Get Perfcake, and our preconfigured Perfcake test config file
 if [[ "x$CYCLE" < "x1" ]];
 then
+   rm -rf PerfCake.git
    git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git;
    cd PerfCake.git;
    git checkout c887baaa13b640dc83ef7203f79d8c4818512aa4;
    cd ..;
    mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests;
 
+   rm -rf Plugins.git
    git clone https://github.com/PerfCake/Plugins Plugins.git;
    mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests;
 fi
@@ -73,7 +75,7 @@ if [[ "x$ADDITIONAL_PERFREPO_TAGS" != "x" ]];
 then
    export PERFREPO_TAGS="$PERFREPO_TAGS;$ADDITIONAL_PERFREPO_TAGS";
 fi
-export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT -Dperfrepo.tags=$PERFREPO_TAGS -Dperfrepo.enabled=true"
+export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT -Dperfrepo.tags=$PERFREPO_TAGS -Dperfrepo.enabled=true -Dperfcake.fail.fast=true"
 
 # (C)RUD
 # Parse/extract the token for the test
@@ -82,10 +84,17 @@ for i in $(seq 1 $USERS);
 do
    auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
    token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-   echo $token >> $TOKEN_LIST;
+   if [[ "x" != "x$token" ]];
+   then
+      echo $token >> $TOKEN_LIST;
+   else
+      echo "ERROR: Unable to acquire authentication token!";
+      exit 1;
+   fi;
 done
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-create $PERFCAKE_PROPS
+echo "PerfCake Exited with code $?"
 cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK_ITEMS_BASE_URI'/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
 cat $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv
 mv $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv $PERFORMANCE_RESULTS
@@ -104,13 +113,20 @@ for i in $(seq 1 $USERS);
 do
    auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
    token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-   echo $token >> $TOKEN_LIST;
+   if [[ "x" != "x$token" ]];
+   then
+      echo $token >> $TOKEN_LIST;
+   else
+      echo "ERROR: Unable to acquire authentication token!";
+      exit 1;
+   fi;
 done
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-read $PERFCAKE_PROPS
+echo "PerfCake Exited with code $?"
 cat $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv
 mv $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv $PERFORMANCE_RESULTS
-#mv $PER	FCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-read.log
+#mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-read.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-read.log
 
@@ -125,10 +141,17 @@ curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s
 #do
 #   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
 #   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-#   echo $token >> $TOKEN_LIST;
+#   if [[ "x" == "x$token" ]];
+#   then
+#      echo $token >> $TOKEN_LIST;
+#   else
+#      echo "ERROR: Unable to acquire authentication token!";
+#      exit 1;
+#   fi;
 #done
 ## Execute PerfCake
 #$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-update $PERFCAKE_PROPS
+#echo "PerfCake Exited with code $?"
 #cat $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv
 #mv $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv $PERFORMANCE_RESULTS
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-update.log
@@ -145,10 +168,17 @@ for i in $(seq 1 $USERS);
 do
    auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
    token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-   echo $token >> $TOKEN_LIST;
+   if [[ "x" != "x$token" ]];
+   then
+      echo $token >> $TOKEN_LIST;
+   else
+      echo "ERROR: Unable to acquire authentication token!";
+      exit 1;
+   fi;
 done
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-delete $PERFCAKE_PROPS
+echo "PerfCake Exited with code $?"
 cat $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv
 mv $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv $PERFORMANCE_RESULTS
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-delete.log
