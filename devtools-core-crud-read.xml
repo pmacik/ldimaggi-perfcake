@@ -54,7 +54,7 @@
          <validatorRef id="printer"/>
       </message>
    </messages>
-   <validation>
+   <validation enabled="false">
       <validator id="simplePrintValidator" class="RegExpValidator">
          <property name="pattern" value=".*test this .* workitem.*"/>
       </validator>
