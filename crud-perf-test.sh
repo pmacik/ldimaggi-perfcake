@@ -79,19 +79,7 @@ export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dw
 
 # (C)RUD
 # Parse/extract the token for the test
-rm -rf $TOKEN_LIST
-for i in $(seq 1 $USERS);
-do
-   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
-   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-   if [[ "x" != "x$token" ]];
-   then
-      echo $token >> $TOKEN_LIST;
-   else
-      echo "ERROR: Unable to acquire authentication token!";
-      exit 1;
-   fi;
-done
+bash -c ./generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-create $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
@@ -105,22 +93,11 @@ mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
 echo "After CREATE:" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
+chmod +x ./generate-auth-tokens.sh
 
 # C(R)UD
 # Parse/extract the token for the test
-rm -rf $TOKEN_LIST
-for i in $(seq 1 $USERS);
-do
-   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
-   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-   if [[ "x" != "x$token" ]];
-   then
-      echo $token >> $TOKEN_LIST;
-   else
-      echo "ERROR: Unable to acquire authentication token!";
-      exit 1;
-   fi;
-done
+bash -c ./generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-read $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
@@ -136,19 +113,7 @@ curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s
 # CR(U)D
 #TODO: Coming soon...
 # Parse/extract the token for the test
-#rm -rf $TOKEN_LIST
-#for i in $(seq 1 $USERS);
-#do
-#   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
-#   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-#   if [[ "x" == "x$token" ]];
-#   then
-#      echo $token >> $TOKEN_LIST;
-#   else
-#      echo "ERROR: Unable to acquire authentication token!";
-#      exit 1;
-#   fi;
-#done
+bash -c ./generate-auth-tokens.sh
 ## Execute PerfCake
 #$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-update $PERFCAKE_PROPS
 #echo "PerfCake Exited with code $?"
@@ -163,19 +128,7 @@ curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s
 
 # CRU(D)
 # Parse/extract the token for the test
-rm -rf $TOKEN_LIST
-for i in $(seq 1 $USERS);
-do
-   auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
-   token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-   if [[ "x" != "x$token" ]];
-   then
-      echo $token >> $TOKEN_LIST;
-   else
-      echo "ERROR: Unable to acquire authentication token!";
-      exit 1;
-   fi;
-done
+bash -c ./generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-delete $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
