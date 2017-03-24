@@ -1,4 +1,4 @@
-set -x
+#set -x
 
 ## Needed ENV Variables
 #export WORKSPACE=$PWD
