@@ -22,7 +22,7 @@ cd $WORKSPACE
 BASE_PERFREPO_TAGS="$ADDITIONAL_PERFREPO_TAGS;server=$SERVER_HOST:$SERVER_PORT"
 
 if [[ "$SERVER_HOST" == "localhost" ]];
-do
+then
 	echo "Running a local server - preparing Docker containers..."
 
 	# Clean docker containers
