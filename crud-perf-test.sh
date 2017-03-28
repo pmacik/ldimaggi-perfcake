@@ -30,7 +30,7 @@ then
    rm -rf PerfCake.git
    git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git;
    cd PerfCake.git;
-   git checkout c887baaa13b640dc83ef7203f79d8c4818512aa4;
+   git checkout f33795c8a3e2a4285e5b4a22cf4affcbb7785469;
    cd ..;
    mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests;
 
