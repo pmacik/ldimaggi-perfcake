@@ -1,6 +1,6 @@
 #set -x
 
-#The following environment variable are assumed to be set accordingly (e.g. via Jenkins job parameters)
+#The following environment variable are assumed to be set properly (e.g. via Jenkins job parameters)
 #export ITERATIONS=100000
 #export THREADS=30
 #export USERS=300
@@ -13,9 +13,9 @@ export JAVA_HOME=/qa/tools/opt/x86_64/jdk1.8.0_last;
 export M2_HOME=/qa/tools/opt/apache-maven-3.3.9
 export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin;
 
-export MAVEN_OPTS="-Dmaven.repo.local=/qa/services/soa_workspace/pmacik/fuse/latest/local-maven-repo"
+export MAVEN_OPTS="-Dmaven.repo.local=$WORKSPACE/local-maven-repo"
 
-echo "Running agains the following instance $SERVER_HOST:$SERVER_PORT"
+echo "Running against the $SERVER_HOST:$SERVER_PORT instance"
 
 cd $WORKSPACE
 
@@ -23,7 +23,7 @@ BASE_PERFREPO_TAGS="$ADDITIONAL_PERFREPO_TAGS;server=$SERVER_HOST:$SERVER_PORT"
 
 if [[ "$SERVER_HOST" == "localhost" ]];
 then
-	echo "Running a local server - preparing Docker containers..."
+	echo "Need a local server - preparing Docker containers..."
 
 	# Clean docker containers
 	for i in `docker ps -a -q`; do docker rm -f $i; done
