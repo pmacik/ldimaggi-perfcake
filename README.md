@@ -1,4 +1,27 @@
 # Red Hat Developer CRUD Soak Test
+## How it works
+The test is divided into 4 separate phases. In each phase ```N``` number of operations (```ITERATIONS```) is performed:
+* ```CREAE```
+   * Create ```N``` unique workitems in the default space.
+   * Remember IDs of all the created workitems (```WID```).
+* ```READ```
+   * For each of the ```WID``` retrieve the workitem.
+* ```UPDATE```
+   * For each of the ```WID``` change the workitem's ```system.title``` attribute.
+* ```DELETE```
+   * For each of the ```WID``` delete the workitem.
+
+All those 4 phases together are called a soak test *CYCLE*.
+
+The *SOAK* test is then executed in the cycles until the required time span is reached.
+
+Before each phase a new set of authentication tokens is generated to simulate a number of different users (```USERS```).
+Those tokens are used in the particular phase to authenticate to the REST API.
+
+After each phase is done the number of workitems in the DB is checked to confirm, that the system behaves as expected.
+
+The results from each phase of each cycle is reported to see the trends in the system during the longterm load.
+ 
 ## How to run the automated test
 ### Start a Jenkins job
 * Go to the Jenkins [job](https://fuse-qe-jenkins-rhel7.rhev-ci-vms.eng.rdu2.redhat.com/view/Performance/job/devtools-performance-core-crud-soak/) and hit the [Build with Parameters](https://fuse-qe-jenkins-rhel7.rhev-ci-vms.eng.rdu2.redhat.com/view/Performance/job/devtools-performance-core-crud-soak/build?delay=0sec) button.
