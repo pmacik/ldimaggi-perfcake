@@ -1,7 +1,7 @@
 # Red Hat Developer CRUD Soak Test
 ## How to run the automated test
 ### Start a Jenkins job
-* Go to the Jenkins [job](http://https://fuse-qe-jenkins-rhel7.rhev-ci-vms.eng.rdu2.redhat.com/view/Performance/job/devtools-performance-core-crud-soak/) and hit the [Build with Parameters](https://fuse-qe-jenkins-rhel7.rhev-ci-vms.eng.rdu2.redhat.com/view/Performance/job/devtools-performance-core-crud-soak/build?delay=0sec) button.
+* Go to the Jenkins [job](https://fuse-qe-jenkins-rhel7.rhev-ci-vms.eng.rdu2.redhat.com/view/Performance/job/devtools-performance-core-crud-soak/) and hit the [Build with Parameters](https://fuse-qe-jenkins-rhel7.rhev-ci-vms.eng.rdu2.redhat.com/view/Performance/job/devtools-performance-core-crud-soak/build?delay=0sec) button.
 * Keep the parameters intact for the duration of 12 hours and to test the Core server locally. 
    * ```SERVER_HOST``` and ```SERVER_PORT``` are the host name or the IP address and a port number of the Core server's REST API, where the requests to perform CRUD operations are sent by the clients.
      If the value is ```localhost``` (the default) a fresh instance of the Core server and a PostgreSQL DB is created and started locally as a Docker containers at the same node so all the traffic is over localhost.
