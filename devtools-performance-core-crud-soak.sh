@@ -77,5 +77,8 @@ do
 done
 
 # Do not clean docker containers - for the debugging purposes
-#for i in `docker ps -a -q`; do docker rm -f $i; done
-#for i in `docker volume ls -q`; do docker volume rm $i; done
+#if [[ "$SERVER_HOST" == "localhost" ]];
+#then
+#  for i in `docker ps -a -q`; do docker rm -f $i; done
+#  for i in `docker volume ls -q`; do docker volume rm $i; done
+#fi
