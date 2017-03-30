@@ -19,8 +19,6 @@ echo "Running against the $SERVER_HOST:$SERVER_PORT instance"
 
 cd $WORKSPACE
 
-BASE_PERFREPO_TAGS="$ADDITIONAL_PERFREPO_TAGS;server=$SERVER_HOST:$SERVER_PORT"
-
 if [[ "$SERVER_HOST" == "localhost" ]];
 then
 	echo "Need a local server - preparing Docker containers..."
@@ -35,8 +33,6 @@ then
 	rm -rf almighty-core*
 	git clone https://github.com/almighty/almighty-core.git
 	cd almighty-core
-
-	BASE_PERFREPO_TAGS="$BASE_PERFREPO_TAGS;core-commit="`cat .git/refs/heads/master`
 
 	# Run the DB docker image (detached) that the core requires
 	docker run --name db -d -p 5432 -e POSTGRESQL_ADMIN_PASSWORD=mysecretpassword centos/postgresql-95-centos7
@@ -54,6 +50,18 @@ then
 	# Run the docker core image (detached)
 	docker run -p $SERVER_PORT:8080 --name core -d -e ALMIGHTY_DEVELOPER_MODE_ENABLED=true -e ALMIGHTY_POSTGRES_HOST=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' db 2>/dev/null) almighty-core-deploy
 fi
+
+while true;
+do
+   echo "Checking if the Core server is up and running ..."
+   curl -silent http://$SERVER_HOST:$SERVER_PORT/api/status
+   [[ $? -eq 0 ]] && break
+   echo "The Core server is not responding, trying again after 10s."
+   sleep 10
+done
+CORE_SERVER_STATUS=`curl -silent http://$SERVER_HOST:$SERVER_PORT/api/status | grep commit | sed -e 's,":",=,g' | sed -e 's,[{"}],,g' | sed -e 's,\,,;,g'`
+BASE_PERFREPO_TAGS="$ADDITIONAL_PERFREPO_TAGS;server=$SERVER_HOST:$SERVER_PORT;$CORE_SERVER_STATUS"
+
 cd $WORKSPACE
 
 NOW=`date +%s`
