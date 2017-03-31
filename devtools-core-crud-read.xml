@@ -7,7 +7,7 @@
          <property name="fileUrl" value="${workitemid.list}"/>
       </sequence>
    </sequences>
-   <sender class="HttpSender">
+   <sender class="HttpClientSender">
       <target>http://${server.host}:${server.port}/api/spaces/${workitems.space.id}/workitems/@{workItemId}</target>
       <property name="method" value="GET"/>
       <property name="keepConnection" value="false"/>

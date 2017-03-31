@@ -8,7 +8,7 @@
          <property name="fileUrl" value="${auth.token.list}"/>
       </sequence>
    </sequences>
-   <sender class="HttpSender">
+   <sender class="HttpClientSender">
       <target>http://${server.host}:${server.port}/api/spaces/${workitems.space.id}/workitems</target>
       <property name="method" value="POST"/>
       <property name="expectedResponseCodes" value="201"/>

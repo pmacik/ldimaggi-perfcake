@@ -37,12 +37,15 @@ then
    rm -rf Plugins.git
    git clone https://github.com/PerfCake/Plugins Plugins.git;
    mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests;
+   mvn -f Plugins.git/httpclient-sender/pom.xml clean install -DskipTests;
 fi
 
 rm -rf $PERFCAKE_HOME;
-unzip PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip;
+unzip -q PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip;
 cp -rf Plugins.git/perfrepo-destination/target/perfrepo-*.jar $PERFCAKE_HOME/lib/plugins/;
 cp -rf Plugins.git/perfrepo-destination/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
+cp -rf Plugins.git/httpclient-sender/target/httpclient-*.jar $PERFCAKE_HOME/lib/plugins/;
+cp -rf Plugins.git/httpclient-sender/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
 cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-read.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-update.xml $PERFCAKE_HOME/resources/scenarios/;
@@ -115,13 +118,13 @@ curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s
 # Parse/extract the token for the test
 bash -c ./generate-auth-tokens.sh
 ## Execute PerfCake
-#$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-update $PERFCAKE_PROPS
-#echo "PerfCake Exited with code $?"
-#cat $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv
-#mv $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv $PERFORMANCE_RESULTS
+$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-update $PERFCAKE_PROPS
+echo "PerfCake Exited with code $?"
+cat $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv
+mv $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv $PERFORMANCE_RESULTS
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-update.log
-#rm -vf $PERFCAKE_HOME/perfcake-validation.log
-#mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-update.log
+rm -vf $PERFCAKE_HOME/perfcake-validation.log
+mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-update.log
 
 echo "After UPDATE:" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
