@@ -1,7 +1,11 @@
-# Red Hat Developer CRUD Soak Test
+# Red Hat Developer Performance Tests
+This document describes the (always expanding) suite of performance tests for Red Hat Developer. Topics covered in this document include the design and implementation of the tests, how the tests are executed, and how test results can be evaluated.
+
+
+# Test Type: Red Hat Developer CRUD Soak Test
 ## How it works
-The test is divided into 4 separate phases. In each phase ```N``` number of operations (```ITERATIONS```) is performed:
-* ```CREAE```
+This test exercises the Red Hat Developer "core" server. This test makes use of the "Perfcake" (https://www.perfcake.org/) automated test framework. The test is divided into 4 separate phases. In each phase ```N``` number of operations (```ITERATIONS```) is performed:
+* ```CREATE```
    * Create ```N``` unique workitems in the default space.
    * Remember IDs of all the created workitems (```WID```).
 * ```READ```
