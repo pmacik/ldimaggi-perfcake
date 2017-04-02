@@ -47,10 +47,10 @@ The results from each phase of each cycle is reported to see the trends in the s
       * Name: ```UPDATE```, Test: ```Red Hat Developer Core: UPDATE```
       * Name: ```DELETE```, Test: ```Red Hat Developer Core: DELETE```
    * Using [+ Add seiries] button create 4 series:
-      * Chart: ```CREATE```, Series name: ```<YYYY-MM-DD> #<build-number>```, Metric: ```throughput```, Tags: ```jenkins=jenkins-<jenkins-job>-<build-number>```
-      * Chart: ```READ```, Series name: ```<YYYY-MM-DD> #<build-number>```, Metric: ```throughput```, Tags: ```jenkins=jenkins-<jenkins-job>-<build-number>```
-      * Chart: ```UPDATE```, Series name: ```<YYYY-MM-DD> #<build-number>```, Metric: ```throughput```, Tags: ```jenkins=jenkins-<jenkins-job>-<build-number>```
-      * Chart: ```DELETE```, Series name: ```<YYYY-MM-DD> #<build-number>```, Metric: ```throughput```, Tags: ```jenkins=jenkins-<jenkins-job>-<build-number>```
+      * Chart: ```CREATE```, Series name: ```<YYYY-MM-DD> #<core-commit>```, Metric: ```throughput```, Tags: ```jenkins=jenkins-<jenkins-job>-<build-number>```
+      * Chart: ```READ```, Series name: ```<YYYY-MM-DD> #<core-commit>```, Metric: ```throughput```, Tags: ```jenkins=jenkins-<jenkins-job>-<build-number>```
+      * Chart: ```UPDATE```, Series name: ```<YYYY-MM-DD> #<core-commit>```, Metric: ```throughput```, Tags: ```jenkins=jenkins-<jenkins-job>-<build-number>```
+      * Chart: ```DELETE```, Series name: ```<YYYY-MM-DD> #<core-commit>```, Metric: ```throughput```, Tags: ```jenkins=jenkins-<jenkins-job>-<build-number>```
    * Using [Save] button, save the report
    * TODO: @ldimaggi insert a link to the bluejeans recording of the report creation
 * The report can now be found in the report list under the [Reports](http://perfrepo.mw.lab.eng.bos.redhat.com/reports/) section.
