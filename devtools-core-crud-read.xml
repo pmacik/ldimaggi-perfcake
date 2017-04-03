@@ -3,6 +3,7 @@
    <run type="iteration" value="${iteration.count:10000}"/>
    <generator class="DefaultMessageGenerator" threads="${thread.count:10}"/>
    <sequences>
+      <sequence class="ThreadIdSequence" id="threadId"/>
       <sequence id="workItemId" class="FileLinesSequence">
          <property name="fileUrl" value="${workitemid.list}"/>
       </sequence>
@@ -42,6 +43,36 @@
             <property name="tags" value="${perfrepo.tags}"/>
             <property name="testExecutionName" value="Red Hat Developer Core: ${perfcake.scenario}"/>
             <property name="reporterResultName" value="Result"/>
+         </destination>
+      </reporter>
+      <reporter class="ClassifyingReporter">
+         <property name="attribute" value="threadId"/>
+         <property name="prefix" value="thread_"/>
+         <destination class="ConsoleDestination">
+            <period type="percentage" value="100"/>
+         </destination>
+         <destination class="ChartDestination">
+            <period type="percentage" value="100"/>
+            <property name="yAxis" value="Thread usage [messages]"/>
+            <property name="group" value="threads"/>
+            <property name="name" value="READ Thread usage"/>
+            <property name="attributes" value="thread*"/>
+            <property name="type" value="bar"/>
+         </destination>
+      </reporter>
+      <reporter class="ResponseTimeHistogramReporter">
+         <property name="filter" value="true"/>
+         <property name="maxExpectedValue" value="5000"/>
+         <destination class="ConsoleDestination">
+            <period type="percentage" value="100"/>
+         </destination>
+         <destination class="ChartDestination">
+            <period type="percentage" value="100"/>
+            <property name="yAxis" value="HDR Response time [ms]"/>
+            <property name="group" value="read_hdr"/>
+            <property name="name" value="READ Response Time Histogram"/>
+            <property name="attributes" value="perc*"/>
+            <property name="type" value="bar"/>
          </destination>
       </reporter>
    </reporting>
