@@ -32,11 +32,14 @@ then
    cd PerfCake.git;
    git checkout f33795c8a3e2a4285e5b4a22cf4affcbb7785469;
    cd ..;
+   echo "Building PerfCake..."
    mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests 2>&1 > $PERFORMANCE_RESULTS/perfcake-build-maven.log
 
    rm -rf Plugins.git
    git clone https://github.com/PerfCake/Plugins Plugins.git;
+   echo "Building PerfRepo Destination plugin..."
    mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests 2>&1 > $PERFORMANCE_RESULTS/perfrepo-destination-build-maven.log
+   echo "Building HttpClientSender plugin..."
    mvn -f Plugins.git/httpclient-sender/pom.xml clean install -DskipTests 2>&1 > $PERFORMANCE_RESULTS/httpclient-sender-build-maven.log
 fi
 
