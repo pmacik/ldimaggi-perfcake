@@ -1,6 +1,7 @@
 #set -x
 
 #The following environment variable are assumed to be set properly (e.g. via Jenkins job parameters)
+#export WORKSPACE=$PWD #This should be provided by Jenkins
 #export ITERATIONS=100000
 #export THREADS=30
 #export USERS=300
