@@ -133,17 +133,16 @@ echo "After UPDATE:" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
 
 # CRU(D)
-# Temporarily disabled DELETE phase due to https://github.com/almighty/almighty-core/issues/1036
-## Parse/extract the token for the test
-##bash -c ./generate-auth-tokens.sh
-## Execute PerfCake
-#$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-delete $PERFCAKE_PROPS
-#echo "PerfCake Exited with code $?"
-#cat $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv
-#mv $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv $PERFORMANCE_RESULTS
-##mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-delete.log
-#rm -vf $PERFCAKE_HOME/perfcake-validation.log
-#mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log
+# Parse/extract the token for the test
+bash -c ./generate-auth-tokens.sh
+# Execute PerfCake
+$PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-delete $PERFCAKE_PROPS
+echo "PerfCake Exited with code $?"
+cat $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv
+mv $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv $PERFORMANCE_RESULTS
+#mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-delete.log
+rm -vf $PERFCAKE_HOME/perfcake-validation.log
+mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log
 
 echo "After DELETE (disabled):" >> $POC_RESULTS
 curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
