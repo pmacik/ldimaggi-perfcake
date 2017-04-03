@@ -20,6 +20,10 @@ else
    export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results;
 fi
 
+# Prepare clean environment
+rm -rf $PERFORMANCE_RESULTS
+mkdir -p $PERFORMANCE_RESULTS
+
 export TOKEN_LIST=$PERFORMANCE_RESULTS/token.keys
 export WORK_ITEM_IDS=$PERFORMANCE_RESULTS/workitem-id.list
 export POC_RESULTS=$PERFORMANCE_RESULTS/poc-results.log
@@ -53,10 +57,6 @@ cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-read.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-update.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-delete.xml $PERFCAKE_HOME/resources/scenarios/;
-
-# Prepare clean environment
-rm -rf $PERFORMANCE_RESULTS
-mkdir -p $PERFORMANCE_RESULTS
 
 # Get the work items space ID
 spaces_resp=`curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/spaces'`
