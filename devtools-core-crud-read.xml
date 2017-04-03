@@ -54,7 +54,7 @@
          <destination class="ChartDestination">
             <period type="percentage" value="100"/>
             <property name="yAxis" value="Thread usage [messages]"/>
-            <property name="group" value="threads"/>
+            <property name="group" value="delete_threads"/>
             <property name="name" value="READ Thread usage"/>
             <property name="attributes" value="thread*"/>
             <property name="type" value="bar"/>
