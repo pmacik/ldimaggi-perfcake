@@ -65,7 +65,7 @@
       </reporter>
       <reporter class="ResponseTimeHistogramReporter">
          <property name="filter" value="true"/>
-         <property name="maxExpectedValue" value="10000"/>
+         <property name="maxExpectedValue" value="60000"/>
          <destination class="ConsoleDestination">
             <period type="percentage" value="100"/>
          </destination>
