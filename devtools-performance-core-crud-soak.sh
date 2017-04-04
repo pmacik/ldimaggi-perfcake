@@ -73,9 +73,10 @@ export CYCLE=0
 chmod +x crud-perf-test.sh
 while [ `date +%s` -lt $STOP ];
 do
-	export ADDITIONAL_PERFREPO_TAGS="$BASE_PERFREPO_TAGS;soak-cycle=$CYCLE;timestamp="`date +%s`
+	export SOAK_TIMESTAMP=`date +%s`
+	export ADDITIONAL_PERFREPO_TAGS="$BASE_PERFREPO_TAGS;soak-cycle=$CYCLE;timestamp=$SOAK_TIMESTAMP"
 	./crud-perf-test.sh;
-    export CYCLE=`expr $CYCLE + 1`
+	export CYCLE=`expr $CYCLE + 1`
 done
 
 # Do not clean docker containers - for the debugging purposes

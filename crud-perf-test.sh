@@ -28,6 +28,7 @@ mkdir -p $PERFORMANCE_RESULTS
 export TOKEN_LIST=$PERFORMANCE_RESULTS/token.keys
 export WORK_ITEM_IDS=$PERFORMANCE_RESULTS/workitem-id.list
 export SOAK_SUMMARY=$PERFORMANCE_RESULTS/soak-summary.log
+export ZABBIX_REPORT=$PERFORMANCE_RESULTS/zabbix-report.txt
 
 # Get Perfcake, and our preconfigured Perfcake test config file
 if [[ "x$CYCLE" < "x1" ]];
@@ -94,8 +95,9 @@ bash -c ./generate-auth-tokens.sh
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-create $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
 cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK_ITEMS_BASE_URI'/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
-cat $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv
-mv $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv $PERFORMANCE_RESULTS
+#cat $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv
+mv -vf $PERFCAKE_HOME/devtools-core-crud-create-*.csv $PERFORMANCE_RESULTS
+./zabbix-process-results.sh create >> $ZABBIX_REPORT
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-create.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
@@ -109,8 +111,9 @@ bash -c ./generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-read $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
-cat $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv
-mv $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv $PERFORMANCE_RESULTS
+#cat $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv
+mv -vf $PERFCAKE_HOME/devtools-core-crud-read-*.csv $PERFORMANCE_RESULTS
+./zabbix-process-results.sh read >> $ZABBIX_REPORT
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-read.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-read.log
@@ -125,8 +128,9 @@ bash -c ./generate-auth-tokens.sh
 ## Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-update $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
-cat $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv
-mv $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv $PERFORMANCE_RESULTS
+#cat $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv
+mv -vf $PERFCAKE_HOME/devtools-core-crud-update-*.csv $PERFORMANCE_RESULTS
+./zabbix-process-results.sh update >> $ZABBIX_REPORT
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-update.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-update.log
@@ -140,8 +144,9 @@ bash -c ./generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-delete $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
-cat $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv
-mv $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv $PERFORMANCE_RESULTS
+#cat $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv
+mv -vf $PERFCAKE_HOME/devtools-core-crud-delete*.csv $PERFORMANCE_RESULTS
+./zabbix-process-results.sh delete >> $ZABBIX_REPORT
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-delete.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log

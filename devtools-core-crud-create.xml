@@ -51,6 +51,10 @@
          <destination class="ConsoleDestination">
             <period type="percentage" value="100"/>
          </destination>
+         <destination class="CsvDestination">
+            <period type="percentage" value="100"/>
+            <property name="path" value="${perfcake.scenario}-thread-usage.csv"/>
+         </destination>
          <destination class="ChartDestination">
             <period type="percentage" value="100"/>
             <property name="yAxis" value="Thread usage [messages]"/>
@@ -65,6 +69,10 @@
          <property name="maxExpectedValue" value="60000"/>
          <destination class="ConsoleDestination">
             <period type="percentage" value="100"/>
+         </destination>
+         <destination class="CsvDestination">
+            <period type="percentage" value="100"/>
+            <property name="path" value="${perfcake.scenario}-response-time-histogram.csv"/>
          </destination>
          <destination class="ChartDestination">
             <period type="percentage" value="100"/>
