@@ -2,13 +2,14 @@
 
 #The following environment variable are assumed to be set properly (e.g. via Jenkins job parameters)
 #export WORKSPACE=$PWD #This should be provided by Jenkins
-#export ITERATIONS=100000
-#export THREADS=30
-#export USERS=300
+#export ITERATIONS=1000
+#export THREADS=10
+#export USERS=100
 #export SERVER_HOST=localhost
 #export SERVER_PORT=80
-#export DURATION=43200
+#export DURATION=10
 #export ADDITIONAL_PERFREPO_TAGS=soak
+#export PERFREPO_ENABLED=false
 
 export JAVA_HOME=/qa/tools/opt/x86_64/jdk1.8.0_last;
 export M2_HOME=/qa/tools/opt/apache-maven-3.3.9

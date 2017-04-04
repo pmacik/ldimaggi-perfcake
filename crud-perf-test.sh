@@ -2,11 +2,12 @@
 
 ## Needed ENV Variables
 #export WORKSPACE=$PWD
-#export ITERATIONS=1000
-#export THREADS=10
-#export USERS=10 # keep it 1 until https://github.com/PerfCake/PerfCake/issues/379 is fixed
-#export SERVER_HOST=api-perf.dev.rdu2c.fabric8.io
+#export ITERATIONS=100000
+#export THREADS=30
+#export USERS=300
+#export SERVER_HOST=core-api-route-dsaas-e2e-testing.b6ff.rh-idev.openshiftapps.com
 #export SERVER_PORT=80
+#export PERFREPO_ENABLED=false
 
 ## Actuall test
 
@@ -26,7 +27,7 @@ mkdir -p $PERFORMANCE_RESULTS
 
 export TOKEN_LIST=$PERFORMANCE_RESULTS/token.keys
 export WORK_ITEM_IDS=$PERFORMANCE_RESULTS/workitem-id.list
-export POC_RESULTS=$PERFORMANCE_RESULTS/poc-results.log
+export SOAK_SUMMARY=$PERFORMANCE_RESULTS/soak-summary.log
 
 # Get Perfcake, and our preconfigured Perfcake test config file
 if [[ "x$CYCLE" < "x1" ]];
@@ -67,21 +68,24 @@ export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
 
 if [[ "x$CYCLE" != "x" ]];
 then
-   echo "==========================================" >> $POC_RESULTS;
-   echo "Cycle # $CYCLE:" >> $POC_RESULTS;
+   echo "==========================================" >> $SOAK_SUMMARY;
+   echo "Cycle # $CYCLE:" >> $SOAK_SUMMARY;
 fi
-echo "Running $ITERATIONS iterations with $THREADS threads" >> $POC_RESULTS
+echo "Running $ITERATIONS iterations with $THREADS threads" >> $SOAK_SUMMARY
+
+chmod +x ./generate-auth-tokens.sh
+chmod +x ./get-workitem-count.sh
 
 # Get a baseline of workitems in DB
-echo "BEFORE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+echo "BEFORE:" >> $SOAK_SUMMARY
+./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 export PERFREPO_TAGS="threads=$THREADS;iterations=$ITERATIONS;users=$USERS;jenkins=$BUILD_TAG"
 if [[ "x$ADDITIONAL_PERFREPO_TAGS" != "x" ]];
 then
    export PERFREPO_TAGS="$PERFREPO_TAGS;$ADDITIONAL_PERFREPO_TAGS";
 fi
-export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT -Dperfrepo.tags=$PERFREPO_TAGS -Dperfrepo.enabled=true -Dperfcake.fail.fast=false"
+export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT -Dperfrepo.tags=$PERFREPO_TAGS -Dperfrepo.enabled=$PERFREPO_ENABLED"
 
 # (C)RUD
 # Parse/extract the token for the test
@@ -96,10 +100,8 @@ mv $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv $PERFORMANCE_
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
 
-echo "After CREATE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
-
-chmod +x ./generate-auth-tokens.sh
+echo "After CREATE:" >> $SOAK_SUMMARY
+./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 # C(R)UD
 # Parse/extract the token for the test
@@ -113,8 +115,8 @@ mv $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv $PERFORMANCE_RE
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-read.log
 
-echo "After READ:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+echo "After READ:" >> $SOAK_SUMMARY
+./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 # CR(U)D
 #TODO: Coming soon...
@@ -129,8 +131,8 @@ mv $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv $PERFORMANCE_
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-update.log
 
-echo "After UPDATE:" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+echo "After UPDATE:" >> $SOAK_SUMMARY
+./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 # CRU(D)
 # Parse/extract the token for the test
@@ -144,11 +146,10 @@ mv $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv $PERFORMANCE_
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log
 
-echo "After DELETE (disabled):" >> $POC_RESULTS
-curl -silent -X GET --header 'Accept: application/json' $WORK_ITEMS_URI |  sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount >> $POC_RESULTS
+echo "After DELETE (disabled):" >> $SOAK_SUMMARY
+./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
-cat $POC_RESULTS
+cat $SOAK_SUMMARY
 
 # Copy the PerfCake results to the jenkins' workspace to be able to archive
 cp -rvf $PERFCAKE_HOME/perfcake-chart $PERFORMANCE_RESULTS
-
