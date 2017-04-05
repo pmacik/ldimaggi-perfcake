@@ -6,6 +6,7 @@
 #export SERVER_HOST=api-perf.dev.rdu2c.fabric8.io
 #export SERVER_PORT=80
 
+echo "Generating authentization tokens into $TOKEN_LIST"
 rm -rf $TOKEN_LIST
 for i in $(seq 1 $USERS);
 do
