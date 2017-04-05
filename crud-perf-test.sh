@@ -157,7 +157,10 @@ mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log
 echo "After DELETE (disabled):" >> $SOAK_SUMMARY
 ./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
+echo "Soak test summary:"
 cat $SOAK_SUMMARY
+echo "Zabbix report"
+cat $ZABBIX_REPORT
 
 # Copy the PerfCake results to the jenkins' workspace to be able to archive
 cp -rvf $PERFCAKE_HOME/perfcake-chart $PERFORMANCE_RESULTS
