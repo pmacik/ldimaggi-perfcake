@@ -10,12 +10,10 @@
 #export DURATION=10
 #export ADDITIONAL_PERFREPO_TAGS=soak
 #export PERFREPO_ENABLED=false
-
-export JAVA_HOME=/qa/tools/opt/x86_64/jdk1.8.0_last;
-export M2_HOME=/qa/tools/opt/apache-maven-3.3.9
-export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin;
-
-export MAVEN_OPTS="-Dmaven.repo.local=$WORKSPACE/local-maven-repo"
+#export JAVA_HOME=/qa/tools/opt/x86_64/jdk1.8.0_last;
+#export M2_HOME=/qa/tools/opt/apache-maven-3.3.9
+#export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin;
+#export MAVEN_OPTS="-Dmaven.repo.local=$WORKSPACE/local-maven-repo"
 
 echo "Running against the $SERVER_HOST:$SERVER_PORT instance"
 
