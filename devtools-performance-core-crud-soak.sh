@@ -63,6 +63,7 @@ do
 done
 CORE_SERVER_STATUS=`curl -silent http://$SERVER_HOST:$SERVER_PORT/api/status | grep commit | sed -e 's,":",=,g' | sed -e 's,[{"}],,g' | sed -e 's,\,,;,g'`
 BASE_PERFREPO_TAGS="$ADDITIONAL_PERFREPO_TAGS;server=$SERVER_HOST:$SERVER_PORT;$CORE_SERVER_STATUS"
+export CORE_SERVER_COMMIT=`echo $CORE_SERVER_STATUS | sed -e 's,.*commit=\([^;]*\);.*,\1,g'`
 
 cd $WORKSPACE
 

@@ -77,6 +77,9 @@ echo "Running $ITERATIONS iterations with $THREADS threads" >> $SOAK_SUMMARY
 chmod +x ./generate-auth-tokens.sh
 chmod +x ./get-workitem-count.sh
 
+export ZABBIX_HOST_PREFIX="PerfHost"
+echo "$ZABBIX_HOST_PREFIX CoreCommit $SOAK_TIMESTAMP $CORE_SERVER_COMMIT" >> $ZABBIX_REPORT
+
 # Get a baseline of workitems in DB
 echo "BEFORE:" >> $SOAK_SUMMARY
 ./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
