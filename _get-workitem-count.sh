@@ -11,8 +11,3 @@ then
 else
 	echo $workitem_count | sed s/.*totalCount/\\n\\n\\n"totalCount of workitems in DB"/g | sed s/\"//g | sed s/}//g| grep totalCount
 fi
-
-
-
-
-
