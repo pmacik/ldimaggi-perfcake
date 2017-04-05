@@ -31,8 +31,7 @@ export SOAK_SUMMARY=$PERFORMANCE_RESULTS/soak-summary.log
 export ZABBIX_REPORT=$PERFORMANCE_RESULTS/zabbix-report.txt
 
 # Get Perfcake, and our preconfigured Perfcake test config file
-#if [[ "x$CYCLE" < "x1" ]];
-if false;
+if [[ "x$CYCLE" < "x1" ]];
 then
    rm -rf PerfCake.git
    git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git;
@@ -75,15 +74,15 @@ then
 fi
 echo "Running $ITERATIONS iterations with $THREADS threads" >> $SOAK_SUMMARY
 
-chmod +x ./generate-auth-tokens.sh
-chmod +x ./get-workitem-count.sh
+chmod +x ./_generate-auth-tokens.sh
+chmod +x ./_get-workitem-count.sh
 
 export ZABBIX_HOST_PREFIX="PerfHost"
-echo "$ZABBIX_HOST_PREFIX CoreCommit $SOAK_TIMESTAMP $CORE_SERVER_COMMIT" >> $ZABBIX_REPORT
+echo "$ZABBIX_HOST_PREFIX coreCommit $SOAK_TIMESTAMP $CORE_SERVER_COMMIT" >> $ZABBIX_REPORT
 
 # Get a baseline of workitems in DB
 echo "BEFORE:" >> $SOAK_SUMMARY
-./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 export PERFREPO_TAGS="threads=$THREADS;iterations=$ITERATIONS;users=$USERS;jenkins=$BUILD_TAG"
 if [[ "x$ADDITIONAL_PERFREPO_TAGS" != "x" ]];
@@ -94,69 +93,69 @@ export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dw
 
 # (C)RUD
 # Parse/extract the token for the test
-bash -c ./generate-auth-tokens.sh
+bash -c ./_generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-create $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
 cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK_ITEMS_BASE_URI'/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
 #cat $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv
 mv -vf $PERFCAKE_HOME/devtools-core-crud-create-*.csv $PERFORMANCE_RESULTS
-./zabbix-process-results.sh create >> $ZABBIX_REPORT
+./_zabbix-process-results.sh create >> $ZABBIX_REPORT
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-create.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
 
 echo "After CREATE:" >> $SOAK_SUMMARY
-./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 # C(R)UD
 # Parse/extract the token for the test
-bash -c ./generate-auth-tokens.sh
+bash -c ./_generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-read $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
 #cat $PERFCAKE_HOME/devtools-core-crud-read-average-throughput.csv
 mv -vf $PERFCAKE_HOME/devtools-core-crud-read-*.csv $PERFORMANCE_RESULTS
-./zabbix-process-results.sh read >> $ZABBIX_REPORT
+./_zabbix-process-results.sh read >> $ZABBIX_REPORT
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-read.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-read.log
 
 echo "After READ:" >> $SOAK_SUMMARY
-./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 # CR(U)D
 #TODO: Coming soon...
 # Parse/extract the token for the test
-bash -c ./generate-auth-tokens.sh
+bash -c ./_generate-auth-tokens.sh
 ## Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-update $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
 #cat $PERFCAKE_HOME/devtools-core-crud-update-average-throughput.csv
 mv -vf $PERFCAKE_HOME/devtools-core-crud-update-*.csv $PERFORMANCE_RESULTS
-./zabbix-process-results.sh update >> $ZABBIX_REPORT
+./_zabbix-process-results.sh update >> $ZABBIX_REPORT
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-update.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-update.log
 
 echo "After UPDATE:" >> $SOAK_SUMMARY
-./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 # CRU(D)
 # Parse/extract the token for the test
-bash -c ./generate-auth-tokens.sh
+bash -c ./_generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-delete $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
 #cat $PERFCAKE_HOME/devtools-core-crud-delete-average-throughput.csv
 mv -vf $PERFCAKE_HOME/devtools-core-crud-delete*.csv $PERFORMANCE_RESULTS
-./zabbix-process-results.sh delete >> $ZABBIX_REPORT
+./_zabbix-process-results.sh delete >> $ZABBIX_REPORT
 #mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-delete.log
 rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log
 
 echo "After DELETE (disabled):" >> $SOAK_SUMMARY
-./get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 echo "Soak test summary:"
 cat $SOAK_SUMMARY
