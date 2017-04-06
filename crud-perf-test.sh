@@ -32,8 +32,8 @@ export SOAK_SUMMARY=$PERFORMANCE_RESULTS/soak-summary.log
 export ZABBIX_REPORT=$PERFORMANCE_RESULTS/zabbix-report.txt
 
 # Get Perfcake, and our preconfigured Perfcake test config file
-#if [[ "x$CYCLE" < "x1" ]];
-if false;
+if [[ "x$CYCLE" < "x1" ]];
+#if false;
 then
    rm -rf PerfCake.git
    git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git;
