@@ -4,13 +4,13 @@
 #export WORKSPACE=$PWD #This should be provided by Jenkins
 #export ITERATIONS=1000
 #export THREADS=10
-#export USERS=100
+#export USERS=10
 #export SERVER_HOST=localhost
 #export SERVER_PORT=80
 #export DURATION=10
 #export ADDITIONAL_PERFREPO_TAGS=soak
 #export PERFREPO_ENABLED=false
-#export ZABBIX_PREFIX_HOST=PerfHost
+#export ZABBIX_HOST_PREFIX=PerfHost
 #export JAVA_HOME=/qa/tools/opt/x86_64/jdk1.8.0_last;
 #export M2_HOME=/qa/tools/opt/apache-maven-3.3.9
 #export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin;

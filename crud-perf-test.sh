@@ -32,7 +32,8 @@ export SOAK_SUMMARY=$PERFORMANCE_RESULTS/soak-summary.log
 export ZABBIX_REPORT=$PERFORMANCE_RESULTS/zabbix-report.txt
 
 # Get Perfcake, and our preconfigured Perfcake test config file
-if [[ "x$CYCLE" < "x1" ]];
+#if [[ "x$CYCLE" < "x1" ]];
+if false;
 then
    rm -rf PerfCake.git
    git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git;
@@ -78,7 +79,7 @@ echo "Running $ITERATIONS iterations with $THREADS threads" >> $SOAK_SUMMARY
 chmod +x ./_generate-auth-tokens.sh
 chmod +x ./_get-workitem-count.sh
 
-echo "$ZABBIX_HOST_PREFIX coreCommit $SOAK_TIMESTAMP $CORE_SERVER_COMMIT" >> $ZABBIX_REPORT
+echo "$ZABBIX_HOST_PREFIX devtools.perf.core.commit $SOAK_TIMESTAMP $CORE_SERVER_COMMIT" >> $ZABBIX_REPORT
 
 # Get a baseline of workitems in DB
 echo "BEFORE:" >> $SOAK_SUMMARY

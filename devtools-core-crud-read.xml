@@ -65,8 +65,7 @@
          </destination>
       </reporter>
       <reporter class="ResponseTimeHistogramReporter">
-         <property name="prefix" value="RespTimePerc"/>
-         <property name="filter" value="false"/>
+         <property name="prefix" value="response-time-percentile-"/>
          <property name="detail" value="1"/>
          <property name="precision" value="3"/>
          <property name="maxExpectedValue" value="60000"/>
@@ -82,7 +81,7 @@
             <property name="yAxis" value="HDR Response time [ms]"/>
             <property name="group" value="read_hdr"/>
             <property name="name" value="READ Response Time Histogram"/>
-            <property name="attributes" value="RespTimePerc*"/>
+            <property name="attributes" value="response-time-percentile-*"/>
             <property name="type" value="bar"/>
          </destination>
       </reporter>
