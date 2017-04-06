@@ -8,6 +8,7 @@
 #export SERVER_HOST=core-api-route-dsaas-e2e-testing.b6ff.rh-idev.openshiftapps.com
 #export SERVER_PORT=80
 #export PERFREPO_ENABLED=false
+#export ZABBIX_HOST_PREFIX="PerfHost"
 
 ## Actuall test
 
@@ -77,7 +78,6 @@ echo "Running $ITERATIONS iterations with $THREADS threads" >> $SOAK_SUMMARY
 chmod +x ./_generate-auth-tokens.sh
 chmod +x ./_get-workitem-count.sh
 
-export ZABBIX_HOST_PREFIX="PerfHost"
 echo "$ZABBIX_HOST_PREFIX coreCommit $SOAK_TIMESTAMP $CORE_SERVER_COMMIT" >> $ZABBIX_REPORT
 
 # Get a baseline of workitems in DB
