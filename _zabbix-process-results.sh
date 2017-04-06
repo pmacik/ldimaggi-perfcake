@@ -11,7 +11,7 @@ AT=$PERFORMANCE_RESULTS/devtools-core-crud-$CRUD_PHASE-average-throughput.csv
 
 for i in `seq 10 50`;
 do
-	perc_k=`cut -d ';' -f $i $RTH | head -n 1 | cut -c1-31`;
+	perc_k=`cut -d ';' -f $i $RTH | head -n 1`;
 	[[ "x$perc_k" == "x" ]] && break;
 	perc_v=`cut -d ';' -f $i $RTH | tail -n 1`;
 	echo "$ZABBIX_HOST_PREFIX devtools.perf.core.$CRUD_PHASE.$perc_k $SOAK_TIMESTAMP $perc_v";
