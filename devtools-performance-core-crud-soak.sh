@@ -2,6 +2,8 @@
 
 source ./_setenv.sh
 
+echo "Running against the $SERVER_HOST:$SERVER_PORT instance"
+
 cd $WORKSPACE
 
 if [[ "$SERVER_HOST" == "localhost" ]];
