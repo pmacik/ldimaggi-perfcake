@@ -5,13 +5,13 @@
 #export WORKSPACE=$PWD #This should be provided by Jenkins
 
 # The number of iterations that will be performed in each of the CRUD phase.
-#export ITERATIONS=1000
+#export ITERATIONS=100000
 
 # The number of concurrent threads that will be accessing the Core server at any time when performing the CRUD operations.
-#export THREADS=10
+#export THREADS=30
 
 # The number of virtual users that will access the Core server. Each user has a unique authentication token generated for him by the Core server.
-#export USERS=10
+#export USERS=300
 
 # The hostname or an IP address of the Core server's REST API, where the requests to perform CRUD operations are sent by the clients.
 # When the hostname is 'localhost' a fresh instance of the Core server and a PostgreSQL DB is created and started locally as a Docker containers.
@@ -21,6 +21,8 @@
 #export SERVER_PORT=80
 
 # A test duration in seconds. The test will perform a new soak cycles until the duration is reached.
+# Low value (e.g. 10) means that only one cycle of CRUD is run.
+# (Example: for the soak test to run approximatelly 12h set DURATION to "43200")
 #export DURATION=10
 
 # 'true' if the results from each soak cycle should be reported to the PerfRepo [http://perfrepo.mw.lab.eng.bos.redhat.com]
