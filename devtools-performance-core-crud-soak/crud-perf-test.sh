@@ -12,9 +12,6 @@
 
 ## Actuall test
 
-export PERFCAKE_VERSION=8.0-SNAPSHOT
-export PERFCAKE_HOME=$WORKSPACE/perfcake-$PERFCAKE_VERSION
-
 if [[ "x$CYCLE" != "x" ]];
 then
    export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results/$CYCLE;
@@ -23,44 +20,12 @@ else
 fi
 
 # Prepare clean environment
-rm -rf $PERFORMANCE_RESULTS
 mkdir -p $PERFORMANCE_RESULTS
 
 export TOKEN_LIST=$PERFORMANCE_RESULTS/token.keys
 export WORK_ITEM_IDS=$PERFORMANCE_RESULTS/workitem-id.list
 export SOAK_SUMMARY=$PERFORMANCE_RESULTS/soak-summary.log
 export ZABBIX_REPORT=$PERFORMANCE_RESULTS/zabbix-report.txt
-
-# Get Perfcake, and our preconfigured Perfcake test config file
-if [[ "x$CYCLE" < "x1" ]];
-#if false;
-then
-   rm -rf PerfCake.git
-   git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git;
-   cd PerfCake.git;
-   git checkout f33795c8a3e2a4285e5b4a22cf4affcbb7785469;
-   cd ..;
-   echo "Building PerfCake..."
-   mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests 2>&1 > $PERFORMANCE_RESULTS/perfcake-build-maven.log
-
-   rm -rf Plugins.git
-   git clone https://github.com/PerfCake/Plugins Plugins.git;
-   echo "Building PerfRepo Destination plugin..."
-   mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests 2>&1 > $PERFORMANCE_RESULTS/perfrepo-destination-build-maven.log
-   echo "Building HttpClientSender plugin..."
-   mvn -f Plugins.git/httpclient-sender/pom.xml clean install -DskipTests 2>&1 > $PERFORMANCE_RESULTS/httpclient-sender-build-maven.log
-fi
-
-rm -rf $PERFCAKE_HOME;
-unzip -q PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip;
-cp -rf Plugins.git/perfrepo-destination/target/perfrepo-*.jar $PERFCAKE_HOME/lib/plugins/;
-cp -rf Plugins.git/perfrepo-destination/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
-cp -rf Plugins.git/httpclient-sender/target/httpclient-*.jar $PERFCAKE_HOME/lib/plugins/;
-cp -rf Plugins.git/httpclient-sender/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
-cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/;
-cp devtools-core-crud-read.xml $PERFCAKE_HOME/resources/scenarios/;
-cp devtools-core-crud-update.xml $PERFCAKE_HOME/resources/scenarios/;
-cp devtools-core-crud-delete.xml $PERFCAKE_HOME/resources/scenarios/;
 
 # Get the work items space ID
 spaces_resp=`curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/spaces'`
