@@ -41,7 +41,7 @@ fi
 while true;
 do
    echo "Checking if the Core server is up and running ..."
-   curl -silent http://$SERVER_HOST:$SERVER_PORT/api/status
+   curl --silent http://$SERVER_HOST:$SERVER_PORT/api/status
    [[ $? -eq 0 ]] && break
    echo "The Core server is not responding, trying again after 10s."
    sleep 10

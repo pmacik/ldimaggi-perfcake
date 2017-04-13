@@ -22,6 +22,37 @@ else
    export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results;
 fi
 
+export CORE_USER_ID=`curl --silent -X GET "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/users | sed -e 's,.*"id":"\([^"]*\)".*,\1,g'`
+create_space_json="{
+  \"data\": {
+    \"attributes\": {
+      \"description\": \"This is the devtools-performance collaboration space\",
+      \"name\": \"devtools-performance-"`date +%s`"\"
+    },
+    \"relationships\": {
+      \"collaborators\": {
+        \"data\": {
+          \"id\": \"$CORE_USER_ID\",
+          \"type\": \"identities\"
+        }
+      },
+      \"owned-by\": {
+        \"data\": {
+          \"id\": \"$CORE_USER_ID\",
+          \"type\": \"identities\"
+        }
+      }
+    },
+    \"type\": \"spaces\"
+  }
+}"
+auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
+token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
+space_resp=`curl --silent -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $token" http://$SERVER_HOST:$SERVER_PORT/api/spaces -d "$create_space_json"`
+export WORK_ITEMS_SPACE=`echo $space_resp | grep self | sed -e 's,.*"self":"[^"]*/api/spaces/\([^"]*\)".*,\1,g'`
+export WORK_ITEMS_BASE_URI="api/spaces/$WORK_ITEMS_SPACE/workitems"
+export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
+
 # Prepare clean environment
 rm -rf $PERFORMANCE_RESULTS
 mkdir -p $PERFORMANCE_RESULTS
@@ -66,7 +97,7 @@ cp devtools-core-crud-delete.xml $PERFCAKE_HOME/resources/scenarios/;
 if [[ "x$CORE_SERVER_COMMIT" != "x" ]];
 then
 	echo "Verifying the Core server version..."
-	current_server_status=`curl -silent http://$SERVER_HOST:$SERVER_PORT/api/status | grep commit | sed -e 's,":",=,g' | sed -e 's,[{"}],,g' | sed -e 's,\,,;,g'`
+	current_server_status=`curl --silent http://$SERVER_HOST:$SERVER_PORT/api/status | grep commit | sed -e 's,":",=,g' | sed -e 's,[{"}],,g' | sed -e 's,\,,;,g'`
 	echo $current_server_status
 	current_server_commit=`echo $current_server_status | sed -e 's,.*commit=\([^;]*\);.*,\1,g'`
 	echo "The Core version is $current_server_commit"
@@ -76,13 +107,6 @@ then
 		exit 1;
 	fi;
 fi
-
-# Get the work items space ID
-spaces_resp=`curl -silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/spaces'`
-export WORK_ITEMS_SPACE=`echo $spaces_resp | grep self | sed -e 's,.*"self":"[^"]*/api/spaces/\([^"]*\)".*,\1,g'`
-
-export WORK_ITEMS_BASE_URI="api/spaces/$WORK_ITEMS_SPACE/workitems"
-export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
 
 if [[ "x$CYCLE" != "x" ]];
 then
@@ -106,7 +130,7 @@ then
    export PERFREPO_TAGS="$PERFREPO_TAGS;$ADDITIONAL_PERFREPO_TAGS";
 fi
 export REPORT_PERIOD=`expr $ITERATIONS / 100`
-export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT -Dperfrepo.tags=$PERFREPO_TAGS -Dperfrepo.enabled=$PERFREPO_ENABLED -Dreport.period=$REPORT_PERIOD -Dperfcake.fail.fast=true"
+export PERFCAKE_PROPS="-Dthread.count=$THREADS -Diteration.count=$ITERATIONS -Duser.id=$CORE_USER_ID -Dworkitems.space.id=$WORK_ITEMS_SPACE -Dworkitemid.list=file:$WORK_ITEM_IDS -Dauth.token.list=file:$TOKEN_LIST -Dserver.host=$SERVER_HOST -Dserver.port=$SERVER_PORT -Dperfrepo.tags=$PERFREPO_TAGS -Dperfrepo.enabled=$PERFREPO_ENABLED -Dreport.period=$REPORT_PERIOD -Dperfcake.fail.fast=true"
 
 # (C)RUD
 # Parse/extract the token for the test
@@ -173,6 +197,11 @@ mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log
 
 echo "After DELETE (disabled):" >> $SOAK_SUMMARY
 ./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+
+# Delete space
+auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
+token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
+curl --silent -X DELETE -H 'Authorization: Bearer "$token"' http://$SERVER_HOST:$SERVER_PORT/api/spaces
 
 echo "Soak test summary:"
 cat $SOAK_SUMMARY
