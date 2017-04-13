@@ -30,16 +30,16 @@ export ZABBIX_REPORT=$PERFORMANCE_RESULTS/zabbix-report.txt
 # Verify the Core version
 if [[ "x$CORE_SERVER_COMMIT" != "x" ]];
 then
-<->echo "Verifying the Core server version..."
-<->current_server_status=`curl -silent http://$SERVER_HOST:$SERVER_PORT/api/status | grep commit | sed -e 's,":",=,g' | sed -e 's,[{"}],,g' | sed -e 's,\,,;,g'`
-<->echo $current_server_status
-<->current_server_commit=`echo $current_server_status | sed -e 's,.*commit=\([^;]*\);.*,\1,g'`
-<->echo "The Core version is $current_server_commit"
-<->if [[ $CORE_SERVER_COMMIT != $current_server_commit ]];
-<->then
-<-><->echo "ERROR: THE CORE VERSION ($current_server_commit) HAS CHANGED FROM EXPECTED ($CORE_SERVER_COMMIT).";
-<-><->exit 1;
-<->fi;
+	echo "Verifying the Core server version..."
+	current_server_status=`curl -silent http://$SERVER_HOST:$SERVER_PORT/api/status | grep commit | sed -e 's,":",=,g' | sed -e 's,[{"}],,g' | sed -e 's,\,,;,g'`
+	echo $current_server_status
+	current_server_commit=`echo $current_server_status | sed -e 's,.*commit=\([^;]*\);.*,\1,g'`
+	echo "The Core version is $current_server_commit"
+	if [[ $CORE_SERVER_COMMIT != $current_server_commit ]];
+	then
+		echo "ERROR: THE CORE VERSION ($current_server_commit) HAS CHANGED FROM EXPECTED ($CORE_SERVER_COMMIT).";
+		exit 1;
+	fi;
 fi
 
 # Get the work items space ID

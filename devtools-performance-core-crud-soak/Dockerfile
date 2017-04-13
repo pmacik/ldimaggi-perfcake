@@ -4,7 +4,7 @@ ENV LANG=en_US.utf8
 
 USER root
 
-RUN yum -y install java-1.8.0-openjdk-devel java-1.8.0-openjdk wget git curl make unzip maven
+RUN yum -y install java-1.8.0-openjdk-devel java-1.8.0-openjdk wget git curl make unzip maven which
 
 # Create a non-root user and a group with the same name: "almighty"
 ENV ALMIGHTY_USER_NAME=almighty
@@ -31,6 +31,15 @@ ENV PERFCAKE_HOME=$WORKSPACE/perfcake-$PERFCAKE_VERSION
 
 WORKDIR /home/almighty
 
+RUN	git clone -b devel https://github.com/PerfCake/PerfCake PerfCake.git \
+		&& cd PerfCake.git \
+		&& git checkout f33795c8a3e2a4285e5b4a22cf4affcbb7785469
+RUN	mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests
+
+RUN	git clone https://github.com/PerfCake/Plugins Plugins.git
+RUN	mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests
+RUN	mvn -f Plugins.git/httpclient-sender/pom.xml clean install -DskipTests
+
 COPY crud-perf-test.sh $WORKSPACE/crud-perf-test.sh
 COPY devtools-core-crud-create.xml $WORKSPACE/devtools-core-crud-create.xml
 COPY devtools-core-crud-delete.xml $WORKSPACE/devtools-core-crud-delete.xml
@@ -41,15 +50,6 @@ COPY _generate-auth-tokens.sh $WORKSPACE/_generate-auth-tokens.sh
 COPY _get-workitem-count.sh $WORKSPACE/_get-workitem-count.sh
 COPY _setenv.sh $WORKSPACE/_setenv.sh
 COPY _zabbix-process-results.sh $WORKSPACE/_zabbix-process-results.sh
-
-RUN	git clone -b devel https://github.com/PerfCake/PerfCake PerfCake.git \
-		&& cd PerfCake.git \
-		&& git checkout f33795c8a3e2a4285e5b4a22cf4affcbb7785469
-RUN	mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests
-
-RUN	git clone https://github.com/PerfCake/Plugins Plugins.git
-RUN	mvn -f Plugins.git/perfrepo-destination/pom.xml clean install -DskipTests
-RUN	mvn -f Plugins.git/httpclient-sender/pom.xml clean install -DskipTests
 
 RUN unzip -q $WORKSPACE/PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip \
 		&& cp -rf Plugins.git/perfrepo-destination/target/perfrepo-*.jar $PERFCAKE_HOME/lib/plugins/ \
@@ -62,7 +62,6 @@ RUN unzip -q $WORKSPACE/PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-
 		&& cp $WORKSPACE/devtools-core-crud-delete.xml $PERFCAKE_HOME/resources/scenarios/
 
 USER root
-RUN	yum -y install which
 RUN	chown -R $ALMIGHTY_USER_NAME:$ALMIGHTY_USER_NAME $WORKSPACE/*
 RUN	rm -rf $WORKSPACE/local-maven-repo PerfCake.git Plugins.git
 RUN	yum -y autoremove maven && yum clean all
