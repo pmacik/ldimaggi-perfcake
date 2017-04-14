@@ -22,37 +22,6 @@ else
    export PERFORMANCE_RESULTS=$WORKSPACE/devtools-performance-results;
 fi
 
-export CORE_USER_ID=`curl --silent -X GET "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/users | sed -e 's,.*"id":"\([^"]*\)".*,\1,g'`
-create_space_json="{
-  \"data\": {
-    \"attributes\": {
-      \"description\": \"This is the devtools-performance collaboration space\",
-      \"name\": \"devtools-performance-"`date +%s`"\"
-    },
-    \"relationships\": {
-      \"collaborators\": {
-        \"data\": {
-          \"id\": \"$CORE_USER_ID\",
-          \"type\": \"identities\"
-        }
-      },
-      \"owned-by\": {
-        \"data\": {
-          \"id\": \"$CORE_USER_ID\",
-          \"type\": \"identities\"
-        }
-      }
-    },
-    \"type\": \"spaces\"
-  }
-}"
-auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
-token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-space_resp=`curl --silent -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $token" http://$SERVER_HOST:$SERVER_PORT/api/spaces -d "$create_space_json"`
-export WORK_ITEMS_SPACE=`echo $space_resp | grep self | sed -e 's,.*"self":"[^"]*/api/spaces/\([^"]*\)".*,\1,g'`
-export WORK_ITEMS_BASE_URI="api/spaces/$WORK_ITEMS_SPACE/workitems"
-export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
-
 # Prepare clean environment
 rm -rf $PERFORMANCE_RESULTS
 mkdir -p $PERFORMANCE_RESULTS
@@ -107,6 +76,38 @@ then
 		exit 1;
 	fi;
 fi
+
+export CORE_USER_ID=`curl --silent -X GET "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/users | sed -e 's,.*"id":"\([^"]*\)".*,\1,g'`
+create_space_json="{
+  \"data\": {
+    \"attributes\": {
+      \"description\": \"This is the devtools-performance collaboration space\",
+      \"name\": \"devtools-performance-"`date +%s`"\"
+    },
+    \"relationships\": {
+      \"collaborators\": {
+        \"data\": {
+          \"id\": \"$CORE_USER_ID\",
+          \"type\": \"identities\"
+        }
+      },
+      \"owned-by\": {
+        \"data\": {
+          \"id\": \"$CORE_USER_ID\",
+          \"type\": \"identities\"
+        }
+      }
+    },
+    \"type\": \"spaces\"
+  }
+}"
+
+auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
+token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
+space_resp=`curl --silent -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $token" http://$SERVER_HOST:$SERVER_PORT/api/spaces -d "$create_space_json"`
+export WORK_ITEMS_SPACE=`echo $space_resp | grep self | sed -e 's,.*"self":"[^"]*/api/spaces/\([^"]*\)".*,\1,g'`
+export WORK_ITEMS_BASE_URI="api/spaces/$WORK_ITEMS_SPACE/workitems"
+export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
 
 if [[ "x$CYCLE" != "x" ]];
 then
@@ -199,9 +200,10 @@ echo "After DELETE (disabled):" >> $SOAK_SUMMARY
 ./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
 
 # Delete space
-auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate')
-token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
-curl --silent -X DELETE -H 'Authorization: Bearer "$token"' http://$SERVER_HOST:$SERVER_PORT/api/spaces
+auth_resp=`curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate'`
+token=`echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g'`
+
+curl -X DELETE -H "Authorization: Bearer $token" http://$SERVER_HOST:$SERVER_PORT/api/spaces/$WORK_ITEMS_SPACE
 
 echo "Soak test summary:"
 cat $SOAK_SUMMARY
