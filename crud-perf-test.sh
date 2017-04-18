@@ -157,7 +157,8 @@ export PERFCAKE_PROPS="-Dthread.count=$THREADS \
 -Dperfrepo.tags=$PERFREPO_TAGS \
 -Dperfrepo.enabled=$PERFREPO_ENABLED \
 -Dreport.period=$REPORT_PERIOD \
--Dperfcake.fail.fast=true"
+-Dperfcake.fail.fast=true \
+-Dhttp.maxConnections=$THREADS"
 
 # (C)RUD
 # Parse/extract the token for the test
