@@ -8,7 +8,7 @@ export USERS=300
 export SERVER_HOST=localhost
 export SERVER_PORT=1234
 export DURATION=43200
-export ADDITIONAL_PERFREPO_TAGS=soak;12h;centos-ci
+export ADDITIONAL_PERFREPO_TAGS="soak;12h;centos-ci"
 export ZABBIX_HOST_PREFIX=$NODE_NAME
 export PERFREPO_ENABLED=false
 
