@@ -75,7 +75,7 @@ then
 fi
 
 # Generate auth token to create test users
-curl --silent -X GET -H "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/login/generate
+curl --silent -X GET -H "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/login/generate > /dev/null
 
 echo "Retrieving user ID..."
 export CORE_USER_ID=`curl --silent -X GET -H "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/users | sed -e 's,.*"id":"\([^"]*\)".*,\1,g'`
@@ -169,8 +169,8 @@ cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK
 #cat $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv
 mv -vf $PERFCAKE_HOME/devtools-core-crud-create-*.csv $PERFORMANCE_RESULTS
 ./_zabbix-process-results.sh create >> $ZABBIX_REPORT
-#mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-create.log
-rm -vf $PERFCAKE_HOME/perfcake-validation.log
+mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validation-create.log
+#rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
 
 echo "After CREATE:" >> $SOAK_SUMMARY
