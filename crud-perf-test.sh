@@ -1,4 +1,4 @@
-set -x
+#set -x
 
 ## Needed ENV Variables
 #export WORKSPACE=$PWD
@@ -74,7 +74,18 @@ then
 	fi;
 fi
 
-export CORE_USER_ID=`curl --silent -X GET "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/users | sed -e 's,.*"id":"\([^"]*\)".*,\1,g'`
+# Generate auth token to create test users
+curl --silent -X GET -H "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/login/generate
+
+echo "Retrieving user ID..."
+export CORE_USER_ID=`curl --silent -X GET -H "Accept: application/json" http://$SERVER_HOST:$SERVER_PORT/api/users | sed -e 's,.*"id":"\([^"]*\)".*,\1,g'`
+if [[ "$CORE_USER_ID" =~ [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} ]];
+then
+	echo "User ID is: $CORE_USER_ID";
+else
+	echo "Unable to get user ID: $CORE_USER_ID";
+	exit 1;
+fi
 create_space_json="{
   \"data\": {
     \"attributes\": {
@@ -103,6 +114,13 @@ auth_resp=$(curl --silent -X GET --header 'Accept: application/json' 'http://'$S
 token=$(echo $auth_resp | cut -d ":" -f 3 | sed -e 's/","expires_in//g' | sed -e 's/"//g');
 space_resp=`curl --silent -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: Bearer $token" http://$SERVER_HOST:$SERVER_PORT/api/spaces -d "$create_space_json"`
 export WORK_ITEMS_SPACE=`echo $space_resp | grep self | sed -e 's,.*"self":"[^"]*/api/spaces/\([^"]*\)".*,\1,g'`
+if [[ "$WORK_ITEMS_SPACE" =~ [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} ]];
+then
+	echo "Workitem space ID is: $WORK_ITEMS_SPACE";
+else
+	echo "Unable to get workitem space ID: $WORK_ITEMS_SPACE";
+	exit 1;
+fi
 export WORK_ITEMS_BASE_URI="api/spaces/$WORK_ITEMS_SPACE/workitems"
 export WORK_ITEMS_URI="http://$SERVER_HOST:$SERVER_PORT/$WORK_ITEMS_BASE_URI"
 
