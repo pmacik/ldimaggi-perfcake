@@ -12,7 +12,7 @@
 
 ## Actuall test
 
-export PERFCAKE_VERSION=8.0-SNAPSHOT
+export PERFCAKE_VERSION=7.5
 export PERFCAKE_HOME=$WORKSPACE/perfcake-$PERFCAKE_VERSION
 
 if [[ "x$CYCLE" != "x" ]];
@@ -36,10 +36,7 @@ if [[ "x$CYCLE" < "x1" ]];
 #if false;
 then
    rm -rf PerfCake.git
-   git clone -b devel  https://github.com/PerfCake/PerfCake PerfCake.git;
-   cd PerfCake.git;
-   git checkout f33795c8a3e2a4285e5b4a22cf4affcbb7785469;
-   cd ..;
+   git clone -b v7.5 https://github.com/PerfCake/PerfCake PerfCake.git;
    echo "Building PerfCake..."
    mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests 2>&1 > $PERFORMANCE_RESULTS/perfcake-build-maven.log
 
@@ -139,7 +136,7 @@ bash -c ./_generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-create $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
-cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK_ITEMS_BASE_URI'/\([^"/]*\)/.*".*,\1,g' > $WORK_ITEM_IDS
+cat $PERFCAKE_HOME/perfcake-validation.log | grep Response | sed -e 's,.*/'$WORK_ITEMS_BASE_URI'/\([^"/]*\)/.*".*,\1,g' | grep -v 'null' > $WORK_ITEM_IDS
 #cat $PERFCAKE_HOME/devtools-core-crud-create-average-throughput.csv
 mv -vf $PERFCAKE_HOME/devtools-core-crud-create-*.csv $PERFORMANCE_RESULTS
 ./_zabbix-process-results.sh create >> $ZABBIX_REPORT
