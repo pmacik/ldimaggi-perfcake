@@ -8,6 +8,7 @@
 #export SERVER_HOST=core-api-route-dsaas-e2e-testing.b6ff.rh-idev.openshiftapps.com
 #export SERVER_PORT=80
 #export PERFREPO_ENABLED=false
+#export ZABBIX_REPORT_ENABLED=false
 #export ZABBIX_HOST_PREFIX="PerfHost"
 
 ## Actuall test
@@ -236,8 +237,12 @@ echo "Soak test summary:"
 cat $SOAK_SUMMARY
 echo "Zabbix report"
 cat $ZABBIX_REPORT
-echo "Uploading report to zabbix..."
-zabbix_sender -i $ZABBIX_REPORT -T -z zabbix.devshift.net -p 10051
+
+if [[ "$ZABBIX_REPORT_ENABLED" -eq "true" ]];
+then
+	echo "Uploading report to zabbix...";
+	zabbix_sender -i $ZABBIX_REPORT -T -z zabbix.devshift.net -p 10051;
+fi
 
 # Copy the PerfCake results to the jenkins' workspace to be able to archive
 cp -rvf $PERFCAKE_HOME/perfcake-chart $PERFORMANCE_RESULTS
