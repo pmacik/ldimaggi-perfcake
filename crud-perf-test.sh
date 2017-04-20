@@ -179,7 +179,7 @@ echo "After CREATE:" >> $SOAK_SUMMARY
 
 # C(R)UD
 # Parse/extract the token for the test
-bash -c ./_generate-auth-tokens.sh
+#bash -c ./_generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-read $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
@@ -196,7 +196,7 @@ echo "After READ:" >> $SOAK_SUMMARY
 # CR(U)D
 #TODO: Coming soon...
 # Parse/extract the token for the test
-bash -c ./_generate-auth-tokens.sh
+#bash -c ./_generate-auth-tokens.sh
 ## Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-update $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
@@ -212,7 +212,7 @@ echo "After UPDATE:" >> $SOAK_SUMMARY
 
 # CRU(D)
 # Parse/extract the token for the test
-bash -c ./_generate-auth-tokens.sh
+#bash -c ./_generate-auth-tokens.sh
 # Execute PerfCake
 $PERFCAKE_HOME/bin/perfcake.sh -s devtools-core-crud-delete $PERFCAKE_PROPS
 echo "PerfCake Exited with code $?"
