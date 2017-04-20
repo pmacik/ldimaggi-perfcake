@@ -22,6 +22,7 @@ yum -y install make
 yum -y install chkconfig
 yum -y install unzip
 yum -y install maven
+yum -y install zabbix-sender
 
 # Install Java - ref: https://tecadmin.net/install-java-8-on-centos-rhel-and-fedora/
 

@@ -236,6 +236,8 @@ echo "Soak test summary:"
 cat $SOAK_SUMMARY
 echo "Zabbix report"
 cat $ZABBIX_REPORT
+echo "Uploading report to zabbix..."
+zabbix_sender -i $ZABBIX_REPORT -T -z zabbix.devshift.net -p 10051
 
 # Copy the PerfCake results to the jenkins' workspace to be able to archive
 cp -rvf $PERFCAKE_HOME/perfcake-chart $PERFORMANCE_RESULTS
