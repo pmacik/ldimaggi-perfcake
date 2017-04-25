@@ -176,7 +176,9 @@ mv $PERFCAKE_HOME/perfcake-validation.log $PERFORMANCE_RESULTS/perfcake-validati
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-create.log
 
 echo "After CREATE:" >> $SOAK_SUMMARY
-./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+wi_count_msg=`./_get-workitem-count.sh 2>&1`
+echo $wi_count_msg >> $SOAK_SUMMARY
+echo "$ZABBIX_HOST_PREFIX devtools.perf.core.create.count "`date +%s`" "`echo $wi_count_msg | sed -e 's,.*:\(.*\),\1,g'` >> $ZABBIX_REPORT
 
 # C(R)UD
 # Parse/extract the token for the test
@@ -192,7 +194,10 @@ rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-read.log
 
 echo "After READ:" >> $SOAK_SUMMARY
-./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+#./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+wi_count_msg=`./_get-workitem-count.sh 2>&1`
+echo $wi_count_msg >> $SOAK_SUMMARY
+echo "$ZABBIX_HOST_PREFIX devtools.perf.core.read.count "`date +%s`" "`echo $wi_count_msg | sed -e 's,.*:\(.*\),\1,g'` >> $ZABBIX_REPORT
 
 # CR(U)D
 #TODO: Coming soon...
@@ -209,7 +214,10 @@ rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-update.log
 
 echo "After UPDATE:" >> $SOAK_SUMMARY
-./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+#./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+wi_count_msg=`./_get-workitem-count.sh 2>&1`
+echo $wi_count_msg >> $SOAK_SUMMARY
+echo "$ZABBIX_HOST_PREFIX devtools.perf.core.update.count "`date +%s`" "`echo $wi_count_msg | sed -e 's,.*:\(.*\),\1,g'` >> $ZABBIX_REPORT
 
 # CRU(D)
 # Parse/extract the token for the test
@@ -225,7 +233,10 @@ rm -vf $PERFCAKE_HOME/perfcake-validation.log
 mv $PERFCAKE_HOME/perfcake.log $PERFORMANCE_RESULTS/perfcake-delete.log
 
 echo "After DELETE (disabled):" >> $SOAK_SUMMARY
-./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+#./_get-workitem-count.sh 2>>$SOAK_SUMMARY >> $SOAK_SUMMARY
+wi_count_msg=`./_get-workitem-count.sh 2>&1`
+echo $wi_count_msg >> $SOAK_SUMMARY
+echo "$ZABBIX_HOST_PREFIX devtools.perf.core.delete.count "`date +%s`" "`echo $wi_count_msg | sed -e 's,.*:\(.*\),\1,g'` >> $ZABBIX_REPORT
 
 # Delete space
 auth_resp=`curl --silent -X GET --header 'Accept: application/json' 'http://'$SERVER_HOST':'$SERVER_PORT'/api/login/generate'`
