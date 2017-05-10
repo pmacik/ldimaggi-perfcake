@@ -48,7 +48,7 @@ do
    curl --silent http://$SERVER_HOST:$SERVER_PORT/api/status
    if [[ $? -eq 0 ]]; then
      response_code=`curl -i --silent http://$SERVER_HOST:$SERVER_PORT/api/status | head -n 1 | cut -d " " -f2`;
-     if [[ "$response_code" -eq "200" ]]; then;
+     if [[ "$response_code" -eq "200" ]]; then
        break;
      else
        echo "The Core server is not ready - responding by $response_code code.";
@@ -56,8 +56,8 @@ do
    else
      echo "The Core server is not responding.";
    fi
-   echo "Trying again after 10s."
-   sleep 10
+   echo "Trying again after 10s.";
+   sleep 10;
 done
 CORE_SERVER_STATUS=`curl --silent http://$SERVER_HOST:$SERVER_PORT/api/status | grep commit | sed -e 's,":",=,g' | sed -e 's,[{"}],,g' | sed -e 's,\,,;,g'`
 BASE_PERFREPO_TAGS="$ADDITIONAL_PERFREPO_TAGS;server=$SERVER_HOST:$SERVER_PORT;$CORE_SERVER_STATUS"
