@@ -10,6 +10,10 @@ if [[ "$SERVER_HOST" == "localhost" ]];
 then
 	echo "Need a local server - preparing Docker containers..."
 
+	# Check for docker
+	docker info >> /dev/null
+	[[ $? -ne 0 ]] && exit 1
+
 	# Clean docker containers
 	for i in `docker ps -a -q`; do docker rm -f $i; done
 	for i in `docker volume ls -q`; do docker volume rm $i; done
@@ -42,8 +46,17 @@ while true;
 do
    echo "Checking if the Core server is up and running ..."
    curl --silent http://$SERVER_HOST:$SERVER_PORT/api/status
-   [[ $? -eq 0 ]] && break
-   echo "The Core server is not responding, trying again after 10s."
+   if [[ $? -eq 0 ]]; then
+     response_code=`curl -i --silent http://$SERVER_HOST:$SERVER_PORT/api/status | head -n 1 | cut -d " " -f2`;
+     if [[ "$response_code" -eq "200" ]]; then;
+       break;
+     else
+       echo "The Core server is not ready - responding by $response_code code.";
+     fi;
+   else
+     echo "The Core server is not responding.";
+   fi
+   echo "Trying again after 10s."
    sleep 10
 done
 CORE_SERVER_STATUS=`curl --silent http://$SERVER_HOST:$SERVER_PORT/api/status | grep commit | sed -e 's,":",=,g' | sed -e 's,[{"}],,g' | sed -e 's,\,,;,g'`
