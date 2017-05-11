@@ -36,10 +36,11 @@ export ZABBIX_REPORT=$PERFORMANCE_RESULTS/zabbix-report.txt
 if [[ "x$CYCLE" < "x1" ]];
 #if false;
 then
-   rm -rf PerfCake.git
-   git clone -b v7.5 https://github.com/PerfCake/PerfCake PerfCake.git;
-   echo "Building PerfCake..."
-   mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests 2>&1 > $PERFORMANCE_RESULTS/perfcake-build-maven.log
+   #rm -rf PerfCake.git
+   #git clone -b v7.5 https://github.com/PerfCake/PerfCake PerfCake.git;
+   #echo "Building PerfCake..."
+   #mvn -f PerfCake.git/pom.xml clean install assembly:single -DskipTests 2>&1 > $PERFORMANCE_RESULTS/perfcake-build-maven.log
+   wget https://www.perfcake.org/download/perfcake-$PERFCAKE_VERSION-bin.zip
 
    rm -rf Plugins.git
    git clone https://github.com/PerfCake/Plugins Plugins.git;
@@ -50,7 +51,8 @@ then
 fi
 
 rm -rf $PERFCAKE_HOME;
-unzip -q PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip;
+#unzip -q PerfCake.git/perfcake/target/perfcake-$PERFCAKE_VERSION-bin.zip;
+unzip -q perfcake-$PERFCAKE_VERSION-bin.zip;
 cp -rf Plugins.git/perfrepo-destination/target/perfrepo-*.jar $PERFCAKE_HOME/lib/plugins/;
 cp -rf Plugins.git/perfrepo-destination/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
 cp -rf Plugins.git/httpclient-sender/target/httpclient-*.jar $PERFCAKE_HOME/lib/plugins/;
