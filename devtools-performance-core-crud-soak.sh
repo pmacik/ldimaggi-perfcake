@@ -14,9 +14,10 @@ then
 	docker info >> /dev/null
 	[[ $? -ne 0 ]] && exit 1
 
-	# Clean docker containers
+	# Clean docker containers, volumes, images
 	for i in `docker ps -a -q`; do docker rm -f $i; done
 	for i in `docker volume ls -q`; do docker volume rm $i; done
+	for i in `docker images -q`; do docker rmi $i; done
 
 	# Build the core server that will provide our test client with tokens
 
