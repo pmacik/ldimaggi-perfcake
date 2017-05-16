@@ -63,6 +63,7 @@ unzip -q perfcake-$PERFCAKE_VERSION-bin.zip;
 #cp -rf Plugins.git/httpclient-sender/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
 cp -rf perfrepo-destination/*.jar $PERFCAKE_HOME/lib/plugins/;
 cp -rf httpclient-sender/*.jar $PERFCAKE_HOME/lib/plugins/;
+cp -rf postgresql-monitor-reporter/*.jar $PERFCAKE_HOME/lib/plugins;
 cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-read.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-update.xml $PERFCAKE_HOME/resources/scenarios/;
@@ -167,7 +168,12 @@ export PERFCAKE_PROPS="-Dthread.count=$THREADS \
 -Dperfrepo.enabled=$PERFREPO_ENABLED \
 -Dreport.period=$REPORT_PERIOD \
 -Dperfcake.fail.fast=true \
--Dhttp.maxConnections=$THREADS"
+-Dhttp.maxConnections=$THREADS \
+-Ddb.host=$DB_HOST \
+-Ddb.port=$DB_PORT \
+-Ddb.user=$DB_USER \
+-Ddb.password=$DB_PASSWORD \
+-Ddb.name=$DB_NAME"
 
 # (C)RUD
 # Parse/extract the token for the test
@@ -187,7 +193,7 @@ echo "After CREATE:" >> $SOAK_SUMMARY
 wi_count_msg=`./_get-workitem-count.sh 2>&1`
 echo $wi_count_msg >> $SOAK_SUMMARY
 echo "$ZABBIX_HOST_PREFIX devtools.perf.core.create.count "`date +%s`" "`echo $wi_count_msg | sed -e 's,.*:\(.*\),\1,g'` >> $ZABBIX_REPORT
-
+exit 0
 # C(R)UD
 # Parse/extract the token for the test
 #bash -c ./_generate-auth-tokens.sh
