@@ -26,17 +26,21 @@
          </destination>
          <destination class="ChartDestination">
             <period type="iteration" value="${report.period:100}"/>
-            <property name="name" value="DB max idle time"/>
-            <property name="group" value="db"/>
+            <property name="name" value="CREATE DB max idle time"/>
+            <property name="group" value="create_db"/>
             <property name="yAxis" value="ms"/>
             <property name="attributes" value="MaxIdleTime"/>
          </destination>
          <destination class="ChartDestination">
             <period type="iteration" value="${report.period:100}"/>
-            <property name="name" value="DB Activity"/>
-            <property name="group" value="db_activity"/>
+            <property name="name" value="CREATE DB Activity"/>
+            <property name="group" value="create_db_activity"/>
             <property name="yAxis" value="# of processes"/>
             <property name="attributes" value="Active,Idle,IdleInTransaction"/>
+         </destination>
+         <destination class="CsvDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="path" value="${perfcake.scenario}-db.csv"/>
          </destination>
       </reporter>
       <reporter class="ResponseTimeStatsReporter">

@@ -15,9 +15,38 @@
       <target>http://${server.host}:${server.port}/api/spaces/${workitems.space.id}/workitems/@{workItemId}</target>
       <property name="method" value="DELETE"/>
       <property name="keepConnection" value="false"/>
-      <property name="expectedResponseCodes" value="405"/> <!-- DELETE disabled by https://github.com/almighty/almighty-core/issues/1036 -->
+      <!-- DELETE disabled by https://github.com/almighty/almighty-core/issues/1036 -->
+      <property name="expectedResponseCodes" value="405"/>
    </sender>
    <reporting>
+      <reporter class="PostgresqlMonitorReporter">
+         <property name="dbUser" value="${db.user}"/>
+         <property name="dbPassword" value="${db.password}"/>
+         <property name="dbHost" value="${db.host}"/>
+         <property name="dbPort" value="${db.port}"/>
+         <property name="dbName" value="${db.name}"/>
+         <destination class="ConsoleDestination">
+            <period type="iteration" value="${report.period:100}"/>
+         </destination>
+         <destination class="ChartDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="name" value="DELETE DB max idle time"/>
+            <property name="group" value="delete_db"/>
+            <property name="yAxis" value="ms"/>
+            <property name="attributes" value="MaxIdleTime"/>
+         </destination>
+         <destination class="ChartDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="name" value="DELETE DB Activity"/>
+            <property name="group" value="delete_db_activity"/>
+            <property name="yAxis" value="# of processes"/>
+            <property name="attributes" value="Active,Idle,IdleInTransaction"/>
+         </destination>
+         <destination class="CsvDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="path" value="${perfcake.scenario}-db.csv"/>
+         </destination>
+      </reporter>
       <reporter class="ResponseTimeStatsReporter">
          <property name="minimumEnabled" value="false"/>
          <property name="maximumEnabled" value="false"/>

@@ -19,6 +19,34 @@
       <property name="keepConnection" value="false"/>
    </sender>
    <reporting>
+      <reporter class="PostgresqlMonitorReporter">
+         <property name="dbUser" value="${db.user}"/>
+         <property name="dbPassword" value="${db.password}"/>
+         <property name="dbHost" value="${db.host}"/>
+         <property name="dbPort" value="${db.port}"/>
+         <property name="dbName" value="${db.name}"/>
+         <destination class="ConsoleDestination">
+            <period type="iteration" value="${report.period:100}"/>
+         </destination>
+         <destination class="ChartDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="name" value="UPDATE DB max idle time"/>
+            <property name="group" value="update_db"/>
+            <property name="yAxis" value="ms"/>
+            <property name="attributes" value="MaxIdleTime"/>
+         </destination>
+         <destination class="ChartDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="name" value="UPDATE DB Activity"/>
+            <property name="group" value="update_db_activity"/>
+            <property name="yAxis" value="# of processes"/>
+            <property name="attributes" value="Active,Idle,IdleInTransaction"/>
+         </destination>
+         <destination class="CsvDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="path" value="${perfcake.scenario}-db.csv"/>
+         </destination>
+      </reporter>
       <reporter class="ResponseTimeStatsReporter">
          <property name="minimumEnabled" value="false"/>
          <property name="maximumEnabled" value="false"/>
