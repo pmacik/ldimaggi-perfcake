@@ -52,6 +52,7 @@ then
    unzip -q httpclient-sender-7.5.zip
    wget https://github.com/PerfCake/Plugins/releases/download/v7.5/perfrepo-destination-7.5.zip
    unzip -q perfrepo-destination-7.5.zip
+   echo "Building PostgreSQL monitor plugin..."
    mvn -f postgresql-monitor-reporter/pom.xml clean package -DskipTests 2>&1 > $PERFORMANCE_RESULTS/postgresql-monitor-reporter-build-maven.log
 fi
 
