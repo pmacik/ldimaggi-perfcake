@@ -15,6 +15,30 @@
       <property name="expectedResponseCodes" value="201"/>
    </sender>
    <reporting>
+      <reporter class="PostgresqlMonitorReporter">
+         <property name="dbUser" value="${db.user}"/>
+         <property name="dbPassword" value="${db.password}"/>
+         <property name="dbHost" value="${db.host}"/>
+         <property name="dbPort" value="${db.port}"/>
+         <property name="dbName" value="${db.name}"/>
+         <destination class="ConsoleDestination">
+            <period type="iteration" value="${report.period:100}"/>
+         </destination>
+         <destination class="ChartDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="name" value="DB max idle time"/>
+            <property name="group" value="db"/>
+            <property name="yAxis" value="ms"/>
+            <property name="attributes" value="MaxIdleTime"/>
+         </destination>
+         <destination class="ChartDestination">
+            <period type="iteration" value="${report.period:100}"/>
+            <property name="name" value="DB Activity"/>
+            <property name="group" value="db_activity"/>
+            <property name="yAxis" value="# of processes"/>
+            <property name="attributes" value="Active,Idle,IdleInTransaction"/>
+         </destination>
+      </reporter>
       <reporter class="ResponseTimeStatsReporter">
          <property name="minimumEnabled" value="false"/>
          <property name="maximumEnabled" value="false"/>
