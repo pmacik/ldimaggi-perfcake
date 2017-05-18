@@ -195,7 +195,7 @@ echo "After CREATE:" >> $SOAK_SUMMARY
 wi_count_msg=`./_get-workitem-count.sh 2>&1`
 echo $wi_count_msg >> $SOAK_SUMMARY
 echo "$ZABBIX_HOST_PREFIX devtools.perf.core.create.count "`date +%s`" "`echo $wi_count_msg | sed -e 's,.*:\(.*\),\1,g'` >> $ZABBIX_REPORT
-exit 0
+
 # C(R)UD
 # Parse/extract the token for the test
 #bash -c ./_generate-auth-tokens.sh
