@@ -52,6 +52,7 @@ then
    unzip -q httpclient-sender-7.5.zip
    wget https://github.com/PerfCake/Plugins/releases/download/v7.5/perfrepo-destination-7.5.zip
    unzip -q perfrepo-destination-7.5.zip
+   mvn -f postgresql-monitor-reporter/pom.xml clean package -DskipTests 2>&1 > $PERFORMANCE_RESULTS/postgresql-monitor-reporter-build-maven.log
 fi
 
 rm -rf $PERFCAKE_HOME;
@@ -61,9 +62,10 @@ unzip -q perfcake-$PERFCAKE_VERSION-bin.zip;
 #cp -rf Plugins.git/perfrepo-destination/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
 #cp -rf Plugins.git/httpclient-sender/target/httpclient-*.jar $PERFCAKE_HOME/lib/plugins/;
 #cp -rf Plugins.git/httpclient-sender/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
+cp -rf postgresql-monitor-reporter/target/postgresql-monitor-reporter-*.jar $PERFCAKE_HOME/lib/plugins/;
+cp -rf postgresql-monitor-reporter/target/lib/*.jar $PERFCAKE_HOME/lib/plugins/;
 cp -rf perfrepo-destination/*.jar $PERFCAKE_HOME/lib/plugins/;
 cp -rf httpclient-sender/*.jar $PERFCAKE_HOME/lib/plugins/;
-cp -rf postgresql-monitor-reporter/*.jar $PERFCAKE_HOME/lib/plugins;
 cp devtools-core-crud-create.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-read.xml $PERFCAKE_HOME/resources/scenarios/;
 cp devtools-core-crud-update.xml $PERFCAKE_HOME/resources/scenarios/;
