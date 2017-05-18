@@ -29,7 +29,7 @@
             <property name="name" value="READ DB max idle time"/>
             <property name="group" value="read_db"/>
             <property name="yAxis" value="ms"/>
-            <property name="attributes" value="MaxIdleTime"/>
+            <property name="attributes" value="MaxTransactionTime"/>
          </destination>
          <destination class="ChartDestination">
             <period type="iteration" value="${report.period:100}"/>

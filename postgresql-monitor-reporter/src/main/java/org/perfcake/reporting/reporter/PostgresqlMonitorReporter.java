@@ -102,7 +102,7 @@ public class PostgresqlMonitorReporter extends AbstractReporter {
       try {
          ResultSet rs = statement.executeQuery("SELECT max(now()-xact_start) FROM pg_stat_activity WHERE state IN ('idle in transaction','active');");
          rs.next();
-         m.set("MaxIdleTime", (new Quantity<Number>(rs.getTimestamp(1).getNanos() / 1e6, "ms")));
+         m.set("MaxTransactionTime", (new Quantity<Number>(rs.getTimestamp(1).getNanos() / 1e6, "ms")));
 
          int idle = 0;
          int active = 0;

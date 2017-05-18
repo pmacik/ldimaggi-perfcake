@@ -33,7 +33,7 @@
             <property name="name" value="DELETE DB max idle time"/>
             <property name="group" value="delete_db"/>
             <property name="yAxis" value="ms"/>
-            <property name="attributes" value="MaxIdleTime"/>
+            <property name="attributes" value="MaxTransactionTime"/>
          </destination>
          <destination class="ChartDestination">
             <period type="iteration" value="${report.period:100}"/>
