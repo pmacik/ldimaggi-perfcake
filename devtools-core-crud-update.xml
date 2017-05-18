@@ -30,7 +30,7 @@
          </destination>
          <destination class="ChartDestination">
             <period type="iteration" value="${report.period:100}"/>
-            <property name="name" value="UPDATE DB max idle time"/>
+            <property name="name" value="UPDATE DB max transaction time"/>
             <property name="group" value="update_db"/>
             <property name="yAxis" value="ms"/>
             <property name="attributes" value="MaxTransactionTime"/>
