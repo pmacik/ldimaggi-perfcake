@@ -107,6 +107,7 @@ public class PostgresqlMonitorReporter extends AbstractReporter {
          int idle = 0;
          int active = 0;
          int idleInTransaction = 0;
+         int unknown = 0;
          rs = statement.executeQuery("SELECT pid, state, datname, usename, query FROM pg_stat_activity ORDER BY state ASC");
          final StringBuffer queriesJson = new StringBuffer();
          queriesJson.append("{\"queries\":[");
@@ -115,24 +116,30 @@ public class PostgresqlMonitorReporter extends AbstractReporter {
             if (i > 0) {
                queriesJson.append(",");
             }
-            queriesJson.append("{\"")
-                       .append(rs.getString("state"))
-                       .append("\":\"")
-                       .append(rs.getString("query")
-                                 .replaceAll(Pattern.quote("\""), Matcher.quoteReplacement("\\\""))
-                                 .replaceAll(Pattern.quote("\n"), Matcher.quoteReplacement("\\n"))
-                                 .replaceAll(Pattern.quote("\t"), Matcher.quoteReplacement("\\t"))
-                                 .replaceAll(Pattern.quote("\r"), Matcher.quoteReplacement("\\r"))).append("\"}");
-            switch (rs.getString("state")) {
-               case "active":
-                  active++;
-                  break;
-               case "idle":
-                  idle++;
-                  break;
-               case "idle in transaction":
-                  idleInTransaction++;
-                  break;
+            final String state = rs.getString("state");
+            if (state == null) {
+               unknown++;
+               queriesJson.append("{\"unknown\":\"n/a\"}");
+            } else {
+               queriesJson.append("{\"")
+                          .append(state)
+                          .append("\":\"")
+                          .append(rs.getString("query")
+                                    .replaceAll(Pattern.quote("\""), Matcher.quoteReplacement("\\\""))
+                                    .replaceAll(Pattern.quote("\n"), Matcher.quoteReplacement("\\n"))
+                                    .replaceAll(Pattern.quote("\t"), Matcher.quoteReplacement("\\t"))
+                                    .replaceAll(Pattern.quote("\r"), Matcher.quoteReplacement("\\r"))).append("\"}");
+               switch (rs.getString("state")) {
+                  case "active":
+                     active++;
+                     break;
+                  case "idle":
+                     idle++;
+                     break;
+                  case "idle in transaction":
+                     idleInTransaction++;
+                     break;
+               }
             }
             i++;
          }
@@ -140,6 +147,7 @@ public class PostgresqlMonitorReporter extends AbstractReporter {
          m.set("Active", active);
          m.set("Idle", idle);
          m.set("IdleInTransaction", idleInTransaction);
+         m.set("Unknown", unknown);
          m.set("Queries", queriesJson.toString());
 
          destination.report(m);

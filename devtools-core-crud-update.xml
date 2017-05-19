@@ -40,7 +40,7 @@
             <property name="name" value="UPDATE DB Activity"/>
             <property name="group" value="update_db_activity"/>
             <property name="yAxis" value="# of processes"/>
-            <property name="attributes" value="Active,Idle,IdleInTransaction"/>
+            <property name="attributes" value="Active,Idle,IdleInTransaction,Unknown"/>
          </destination>
          <destination class="CsvDestination">
             <period type="iteration" value="${report.period:100}"/>
