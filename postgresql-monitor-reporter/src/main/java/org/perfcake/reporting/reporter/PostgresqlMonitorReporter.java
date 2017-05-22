@@ -75,8 +75,8 @@ public class PostgresqlMonitorReporter extends AbstractReporter {
 
       SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
       try {
-         if (dbName != null) {
-            connection = DriverManager.getConnection("jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName, dbName, dbPassword);
+         if (dbUser != null) {
+            connection = DriverManager.getConnection("jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName, dbUser, dbPassword);
          } else {
             connection = DriverManager.getConnection("jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName);
          }
