@@ -88,6 +88,7 @@
          <destination class="CsvDestination">
             <period type="percentage" value="100"/>
             <property name="path" value="${perfcake.scenario}-thread-usage.csv"/>
+            <property name="expectedAttributes" value="thread*"/>
          </destination>
          <destination class="ChartDestination">
             <period type="percentage" value="100"/>
@@ -109,6 +110,7 @@
          <destination class="CsvDestination">
             <period type="percentage" value="100"/>
             <property name="path" value="${perfcake.scenario}-response-time-histogram.csv"/>
+            <property name="expectedAttributes" value="response-time-percentile-*"/> 
          </destination>
          <destination class="ChartDestination">
             <period type="percentage" value="100"/>
