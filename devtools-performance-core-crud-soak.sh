@@ -1,5 +1,8 @@
 #set -x
 
+echo "!!!DEPRECATED!!! - moved to https://github.com/pmacik/fabric8-test/tree/master/perf_tests/crud-soak"
+exit 1
+
 source ./_setenv.sh
 
 echo "Running against the $SERVER_HOST:$SERVER_PORT instance"
