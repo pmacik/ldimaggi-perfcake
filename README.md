@@ -1,4 +1,4 @@
-# Red Hat Developer Performance Tests (!!!DEPRECATED!!! - moved to https://github.com/pmacik/fabric8-test/tree/master/perf_tests/crud-soak)
+# Red Hat Developer Performance Tests (!!!DEPRECATED!!! - moved to https://github.com/fabric8io/fabric8-test/tree/master/perf_tests/crud-soak)
 This document describes the (always expanding) suite of performance tests for Red Hat Developer. Topics covered in this document include the design and implementation of the tests, how the tests are executed, and how test results can be evaluated.
 
 

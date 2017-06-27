@@ -1,6 +1,6 @@
 #set -x
 
-echo "!!!DEPRECATED!!! - moved to https://github.com/pmacik/fabric8-test/tree/master/perf_tests/crud-soak"
+echo "!!!DEPRECATED!!! - moved to https://github.com/fabric8io/fabric8-test/tree/master/perf_tests/crud-soak"
 exit 1
 
 source ./_setenv.sh
